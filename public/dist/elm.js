@@ -11412,6 +11412,23 @@ var $author$project$Pages$Test$ChangeValue = F3(
 	});
 var $author$project$Pages$Test$EffortValue = {$: 'EffortValue'};
 var $author$project$Pages$Test$IndividualValue = {$: 'IndividualValue'};
+var $author$project$Pages$Test$getStatusFromParameters = F2(
+	function (pc, params) {
+		switch (pc.$) {
+			case 'HitPoint':
+				return params.hitPoint;
+			case 'Attack':
+				return params.attack;
+			case 'Defence':
+				return params.defence;
+			case 'SpAttack':
+				return params.spAttack;
+			case 'SpDefence':
+				return params.spDefence;
+			default:
+				return params.speed;
+		}
+	});
 var $author$project$Pages$Test$resultView = function (maybeInt) {
 	if (maybeInt.$ === 'Nothing') {
 		return '';
@@ -11443,7 +11460,8 @@ var $author$project$Pages$Test$viewRowInput = F2(
 				$elm$core$String$fromInt(model.attack.effortValue),
 				A2($author$project$Pages$Test$ChangeValue, pc, $author$project$Pages$Test$EffortValue)),
 				$elm$html$Html$text(
-				$author$project$Pages$Test$resultView(model.parameters.hitPoint.value))
+				$author$project$Pages$Test$resultView(
+					A2($author$project$Pages$Test$getStatusFromParameters, pc, model.parameters).value))
 			]);
 	});
 var $author$project$Pages$Test$view = function (model) {

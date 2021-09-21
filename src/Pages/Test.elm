@@ -105,6 +105,28 @@ updateStatus category val status =
             { status | individualValue = val }
 
 
+getStatusFromParameters : ParamCategory -> Parameters -> Status
+getStatusFromParameters pc params =
+    case pc of
+        HitPoint ->
+            params.hitPoint
+
+        Attack ->
+            params.attack
+
+        Defence ->
+            params.defence
+
+        SpAttack ->
+            params.spAttack
+
+        SpDefence ->
+            params.spDefence
+
+        Speed ->
+            params.speed
+
+
 updateParams : ParamCategory -> StatusCategory -> Int -> Int -> Parameters -> Parameters
 updateParams paramCategory statusCategory val level params =
     case paramCategory of
@@ -216,7 +238,7 @@ viewRowInput pc model =
     [ viewInput "text" "種族値" (String.fromInt model.attack.baseStats) (ChangeValue pc BaseStats)
     , viewInput "text" "個体値" (String.fromInt model.attack.individualValue) (ChangeValue pc IndividualValue)
     , viewInput "text" "努力値" (String.fromInt model.attack.effortValue) (ChangeValue pc EffortValue)
-    , text (resultView model.parameters.hitPoint.value)
+    , text (resultView <| .value <| getStatusFromParameters pc model.parameters)
     ]
 
 
