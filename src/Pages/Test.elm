@@ -28,13 +28,30 @@ type alias Status =
     { baseStats : Int, effortValue : Int, individualValue : Int, value : Maybe Int }
 
 
+type alias Parameters =
+    { hitPoint : Status, attack : Status, defence : Status, spAttack : Status, spDefence : Status, speed : Status }
+
+
 type alias Model =
-    { content : String, level : Int, attack : Status }
+    { content : String, level : Int, attack : Status, parameters : Parameters }
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( { content = "", level = 50, attack = Status 0 0 31 Nothing }, Cmd.none )
+    ( { content = ""
+      , level = 50
+      , attack = Status 0 0 31 Nothing
+      , parameters =
+            { hitPoint = Status 0 0 31 Nothing
+            , attack = Status 0 0 31 Nothing
+            , defence = Status 0 0 31 Nothing
+            , spAttack = Status 0 0 31 Nothing
+            , spDefence = Status 0 0 31 Nothing
+            , speed = Status 0 0 31 Nothing
+            }
+      }
+    , Cmd.none
+    )
 
 
 
@@ -63,12 +80,16 @@ type Msg
 
 calculateStatus : Int -> ParamCategory -> Status -> Status
 calculateStatus level paramCategory status =
-    { status | value = Just case paramCategory of
-            HitPoint ->
-                (status.baseStats * 2 + status.individualValue + status.effortValue // 4) * level // 100 + level + 10
-            _ ->
-                (status.baseStats * 2 + status.individualValue + status.effortValue // 4) * level // 100 + 5
-    }
+    let
+        newValue =
+            case paramCategory of
+                HitPoint ->
+                    (status.baseStats * 2 + status.individualValue + status.effortValue // 4) * level // 100 + level + 10
+
+                _ ->
+                    (status.baseStats * 2 + status.individualValue + status.effortValue // 4) * level // 100 + 5
+    in
+    { status | value = Just newValue }
 
 
 updateStatus : StatusCategory -> Int -> Status -> Status
@@ -84,26 +105,78 @@ updateStatus category val status =
             { status | individualValue = val }
 
 
+updateParams : ParamCategory -> StatusCategory -> Int -> Int -> Parameters -> Parameters
+updateParams paramCategory statusCategory val level params =
+    case paramCategory of
+        HitPoint ->
+            { params
+                | hitPoint =
+                    params.hitPoint
+                        |> updateStatus statusCategory val
+                        |> calculateStatus level paramCategory
+            }
+
+        Attack ->
+            { params
+                | attack =
+                    params.attack
+                        |> updateStatus statusCategory val
+                        |> calculateStatus level paramCategory
+            }
+
+        Defence ->
+            { params
+                | defence =
+                    params.defence
+                        |> updateStatus statusCategory val
+                        |> calculateStatus level paramCategory
+            }
+
+        SpAttack ->
+            { params
+                | spAttack =
+                    params.spAttack
+                        |> updateStatus statusCategory val
+                        |> calculateStatus level paramCategory
+            }
+
+        SpDefence ->
+            { params
+                | spDefence =
+                    params.spDefence
+                        |> updateStatus statusCategory val
+                        |> calculateStatus level paramCategory
+            }
+
+        Speed ->
+            { params
+                | speed =
+                    params.speed
+                        |> updateStatus statusCategory val
+                        |> calculateStatus level paramCategory
+            }
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     let
         newModel =
             case msg of
                 Level levelInput ->
-                    case String.toInt levelInput of
+                    case validateLevel levelInput of
                         Nothing ->
                             model
 
                         Just newLevel ->
                             { model | level = newLevel }
 
-                Param paramCategory statusCategory valString ->
-                    case String.toInt valString of
+                Param paramCategory statusCategory input ->
+                    case validateStatusValue statusCategory input of
                         Nothing ->
                             model
 
                         Just val ->
-                            { model | attack = model.attack |> updateStatus statusCategory val |> calculateStatus model.level paramCategory }
+                            { model | parameters = updateParams paramCategory statusCategory val model.level model.parameters }
     in
     ( newModel, Cmd.none )
 
@@ -132,37 +205,37 @@ view model =
             [ viewInput "text" "種族値" (String.fromInt model.attack.baseStats) (Param HitPoint BaseStats)
             , viewInput "text" "個体値" (String.fromInt model.attack.individualValue) (Param HitPoint IndividualValue)
             , viewInput "text" "努力値" (String.fromInt model.attack.effortValue) (Param HitPoint EffortValue)
-            , text (resultView model.attack.value)
+            , text (resultView model.parameters.hitPoint.value)
             ]
         , div []
             [ viewInput "text" "種族値" (String.fromInt model.attack.baseStats) (Param Attack BaseStats)
             , viewInput "text" "個体値" (String.fromInt model.attack.individualValue) (Param Attack IndividualValue)
             , viewInput "text" "努力値" (String.fromInt model.attack.effortValue) (Param Attack EffortValue)
-            , text (resultView model.attack.value)
+            , text (resultView model.parameters.attack.value)
             ]
         , div []
             [ viewInput "text" "種族値" (String.fromInt model.attack.baseStats) (Param Defence BaseStats)
             , viewInput "text" "個体値" (String.fromInt model.attack.individualValue) (Param Defence IndividualValue)
             , viewInput "text" "努力値" (String.fromInt model.attack.effortValue) (Param Defence EffortValue)
-            , text (resultView model.attack.value)
+            , text (resultView model.parameters.defence.value)
             ]
         , div []
             [ viewInput "text" "種族値" (String.fromInt model.attack.baseStats) (Param SpAttack BaseStats)
             , viewInput "text" "個体値" (String.fromInt model.attack.individualValue) (Param SpAttack IndividualValue)
             , viewInput "text" "努力値" (String.fromInt model.attack.effortValue) (Param SpAttack EffortValue)
-            , text (resultView model.attack.value)
+            , text (resultView model.parameters.spAttack.value)
             ]
         , div []
             [ viewInput "text" "種族値" (String.fromInt model.attack.baseStats) (Param SpDefence BaseStats)
             , viewInput "text" "個体値" (String.fromInt model.attack.individualValue) (Param SpDefence IndividualValue)
             , viewInput "text" "努力値" (String.fromInt model.attack.effortValue) (Param SpDefence EffortValue)
-            , text (resultView model.attack.value)
+            , text (resultView model.parameters.spDefence.value)
             ]
         , div []
             [ viewInput "text" "種族値" (String.fromInt model.attack.baseStats) (Param Speed BaseStats)
             , viewInput "text" "個体値" (String.fromInt model.attack.individualValue) (Param Speed IndividualValue)
             , viewInput "text" "努力値" (String.fromInt model.attack.effortValue) (Param Speed EffortValue)
-            , text (resultView model.attack.value)
+            , text (resultView model.parameters.speed.value)
             ]
         ]
     }
@@ -200,33 +273,52 @@ isValid string =
             else
                 False
 
-validateLevel: String -> Bool
+
+validateLevel : String -> Maybe Int
 validateLevel input =
     case String.toInt input of
         Nothing ->
-            False
-        Just level ->
-            True
+            Nothing
 
-validateStatusValue: StatusCategory -> String -> Bool
+        Just level ->
+            if level >= 1 then
+                Just level
+
+            else
+                Nothing
+
+
+validateStatusValue : StatusCategory -> String -> Maybe Int
 validateStatusValue statusCategory input =
     case String.toInt input of
         Nothing ->
-            False
+            Nothing
+
         Just val ->
             case statusCategory of
                 EffortValue ->
                     validateEffortValue val
+
                 BaseStats ->
-                    True
+                    Just val
+
                 IndividualValue ->
                     validateIndividualValue val
 
-validateEffortValue: Int -> Bool
+
+validateEffortValue : Int -> Maybe Int
 validateEffortValue ev =
-    ev <= 252 && ev >= 0
+    if ev <= 252 && ev >= 0 then
+        Just ev
 
-validateIndividualValue: Int -> Bool
+    else
+        Nothing
+
+
+validateIndividualValue : Int -> Maybe Int
 validateIndividualValue iv =
-    iv <= 31 && iv >= 0
+    if iv <= 31 && iv >= 0 then
+        Just iv
 
+    else
+        Nothing

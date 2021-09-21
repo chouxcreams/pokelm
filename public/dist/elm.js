@@ -11190,15 +11190,29 @@ var $author$project$Pages$Test$init = _Utils_Tuple2(
 	{
 		attack: A4($author$project$Pages$Test$Status, 0, 0, 31, $elm$core$Maybe$Nothing),
 		content: '',
-		level: 50
+		level: 50,
+		parameters: {
+			attack: A4($author$project$Pages$Test$Status, 0, 0, 31, $elm$core$Maybe$Nothing),
+			defence: A4($author$project$Pages$Test$Status, 0, 0, 31, $elm$core$Maybe$Nothing),
+			hitPoint: A4($author$project$Pages$Test$Status, 0, 0, 31, $elm$core$Maybe$Nothing),
+			spAttack: A4($author$project$Pages$Test$Status, 0, 0, 31, $elm$core$Maybe$Nothing),
+			spDefence: A4($author$project$Pages$Test$Status, 0, 0, 31, $elm$core$Maybe$Nothing),
+			speed: A4($author$project$Pages$Test$Status, 0, 0, 31, $elm$core$Maybe$Nothing)
+		}
 	},
 	$elm$core$Platform$Cmd$none);
 var $author$project$Pages$Test$subscriptions = function (model) {
 	return $elm$core$Platform$Sub$none;
 };
-var $author$project$Pages$Test$calculateStatus = F2(
-	function (level, status) {
-		var newValue = ((((((status.baseStats * 2) + status.individualValue) + ((status.effortValue / 4) | 0)) * level) / 100) | 0) + 5;
+var $author$project$Pages$Test$calculateStatus = F3(
+	function (level, paramCategory, status) {
+		var newValue = function () {
+			if (paramCategory.$ === 'HitPoint') {
+				return (((((((status.baseStats * 2) + status.individualValue) + ((status.effortValue / 4) | 0)) * level) / 100) | 0) + level) + 10;
+			} else {
+				return ((((((status.baseStats * 2) + status.individualValue) + ((status.effortValue / 4) | 0)) * level) / 100) | 0) + 5;
+			}
+		}();
 		return _Utils_update(
 			status,
 			{
@@ -11222,12 +11236,109 @@ var $author$project$Pages$Test$updateStatus = F3(
 					{individualValue: val});
 		}
 	});
+var $author$project$Pages$Test$updateParams = F5(
+	function (paramCategory, statusCategory, val, level, params) {
+		switch (paramCategory.$) {
+			case 'HitPoint':
+				return _Utils_update(
+					params,
+					{
+						hitPoint: A3(
+							$author$project$Pages$Test$calculateStatus,
+							level,
+							paramCategory,
+							A3($author$project$Pages$Test$updateStatus, statusCategory, val, params.hitPoint))
+					});
+			case 'Attack':
+				return _Utils_update(
+					params,
+					{
+						attack: A3(
+							$author$project$Pages$Test$calculateStatus,
+							level,
+							paramCategory,
+							A3($author$project$Pages$Test$updateStatus, statusCategory, val, params.attack))
+					});
+			case 'Defence':
+				return _Utils_update(
+					params,
+					{
+						defence: A3(
+							$author$project$Pages$Test$calculateStatus,
+							level,
+							paramCategory,
+							A3($author$project$Pages$Test$updateStatus, statusCategory, val, params.defence))
+					});
+			case 'SpAttack':
+				return _Utils_update(
+					params,
+					{
+						spAttack: A3(
+							$author$project$Pages$Test$calculateStatus,
+							level,
+							paramCategory,
+							A3($author$project$Pages$Test$updateStatus, statusCategory, val, params.spAttack))
+					});
+			case 'SpDefence':
+				return _Utils_update(
+					params,
+					{
+						spDefence: A3(
+							$author$project$Pages$Test$calculateStatus,
+							level,
+							paramCategory,
+							A3($author$project$Pages$Test$updateStatus, statusCategory, val, params.spDefence))
+					});
+			default:
+				return _Utils_update(
+					params,
+					{
+						speed: A3(
+							$author$project$Pages$Test$calculateStatus,
+							level,
+							paramCategory,
+							A3($author$project$Pages$Test$updateStatus, statusCategory, val, params.speed))
+					});
+		}
+	});
+var $author$project$Pages$Test$validateLevel = function (input) {
+	var _v0 = $elm$core$String$toInt(input);
+	if (_v0.$ === 'Nothing') {
+		return $elm$core$Maybe$Nothing;
+	} else {
+		var level = _v0.a;
+		return (level >= 1) ? $elm$core$Maybe$Just(level) : $elm$core$Maybe$Nothing;
+	}
+};
+var $author$project$Pages$Test$validateEffortValue = function (ev) {
+	return ((ev <= 252) && (ev >= 0)) ? $elm$core$Maybe$Just(ev) : $elm$core$Maybe$Nothing;
+};
+var $author$project$Pages$Test$validateIndividualValue = function (iv) {
+	return ((iv <= 31) && (iv >= 0)) ? $elm$core$Maybe$Just(iv) : $elm$core$Maybe$Nothing;
+};
+var $author$project$Pages$Test$validateStatusValue = F2(
+	function (statusCategory, input) {
+		var _v0 = $elm$core$String$toInt(input);
+		if (_v0.$ === 'Nothing') {
+			return $elm$core$Maybe$Nothing;
+		} else {
+			var val = _v0.a;
+			switch (statusCategory.$) {
+				case 'EffortValue':
+					return $author$project$Pages$Test$validateEffortValue(val);
+				case 'BaseStats':
+					return $elm$core$Maybe$Just(val);
+				default:
+					return $author$project$Pages$Test$validateIndividualValue(val);
+			}
+		}
+	});
 var $author$project$Pages$Test$update = F2(
 	function (msg, model) {
 		var newModel = function () {
 			if (msg.$ === 'Level') {
 				var levelInput = msg.a;
-				var _v1 = $elm$core$String$toInt(levelInput);
+				var _v1 = $author$project$Pages$Test$validateLevel(levelInput);
 				if (_v1.$ === 'Nothing') {
 					return model;
 				} else {
@@ -11239,8 +11350,8 @@ var $author$project$Pages$Test$update = F2(
 			} else {
 				var paramCategory = msg.a;
 				var statusCategory = msg.b;
-				var valString = msg.c;
-				var _v2 = $elm$core$String$toInt(valString);
+				var input = msg.c;
+				var _v2 = A2($author$project$Pages$Test$validateStatusValue, statusCategory, input);
 				if (_v2.$ === 'Nothing') {
 					return model;
 				} else {
@@ -11248,10 +11359,7 @@ var $author$project$Pages$Test$update = F2(
 					return _Utils_update(
 						model,
 						{
-							attack: A2(
-								$author$project$Pages$Test$calculateStatus,
-								model.level,
-								A3($author$project$Pages$Test$updateStatus, statusCategory, val, model.attack))
+							parameters: A5($author$project$Pages$Test$updateParams, paramCategory, statusCategory, val, model.level, model.parameters)
 						});
 				}
 			}
@@ -11262,6 +11370,7 @@ var $author$project$Pages$Test$Attack = {$: 'Attack'};
 var $author$project$Pages$Test$BaseStats = {$: 'BaseStats'};
 var $author$project$Pages$Test$Defence = {$: 'Defence'};
 var $author$project$Pages$Test$EffortValue = {$: 'EffortValue'};
+var $author$project$Pages$Test$HitPoint = {$: 'HitPoint'};
 var $author$project$Pages$Test$IndividualValue = {$: 'IndividualValue'};
 var $author$project$Pages$Test$Level = function (a) {
 	return {$: 'Level', a: a};
@@ -11332,6 +11441,32 @@ var $author$project$Pages$Test$view = function (model) {
 						'text',
 						'種族値',
 						$elm$core$String$fromInt(model.attack.baseStats),
+						A2($author$project$Pages$Test$Param, $author$project$Pages$Test$HitPoint, $author$project$Pages$Test$BaseStats)),
+						A4(
+						$author$project$Pages$Test$viewInput,
+						'text',
+						'個体値',
+						$elm$core$String$fromInt(model.attack.individualValue),
+						A2($author$project$Pages$Test$Param, $author$project$Pages$Test$HitPoint, $author$project$Pages$Test$IndividualValue)),
+						A4(
+						$author$project$Pages$Test$viewInput,
+						'text',
+						'努力値',
+						$elm$core$String$fromInt(model.attack.effortValue),
+						A2($author$project$Pages$Test$Param, $author$project$Pages$Test$HitPoint, $author$project$Pages$Test$EffortValue)),
+						$elm$html$Html$text(
+						$author$project$Pages$Test$resultView(model.parameters.hitPoint.value))
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_Nil,
+				_List_fromArray(
+					[
+						A4(
+						$author$project$Pages$Test$viewInput,
+						'text',
+						'種族値',
+						$elm$core$String$fromInt(model.attack.baseStats),
 						A2($author$project$Pages$Test$Param, $author$project$Pages$Test$Attack, $author$project$Pages$Test$BaseStats)),
 						A4(
 						$author$project$Pages$Test$viewInput,
@@ -11346,7 +11481,7 @@ var $author$project$Pages$Test$view = function (model) {
 						$elm$core$String$fromInt(model.attack.effortValue),
 						A2($author$project$Pages$Test$Param, $author$project$Pages$Test$Attack, $author$project$Pages$Test$EffortValue)),
 						$elm$html$Html$text(
-						$author$project$Pages$Test$resultView(model.attack.value))
+						$author$project$Pages$Test$resultView(model.parameters.attack.value))
 					])),
 				A2(
 				$elm$html$Html$div,
@@ -11372,7 +11507,7 @@ var $author$project$Pages$Test$view = function (model) {
 						$elm$core$String$fromInt(model.attack.effortValue),
 						A2($author$project$Pages$Test$Param, $author$project$Pages$Test$Defence, $author$project$Pages$Test$EffortValue)),
 						$elm$html$Html$text(
-						$author$project$Pages$Test$resultView(model.attack.value))
+						$author$project$Pages$Test$resultView(model.parameters.defence.value))
 					])),
 				A2(
 				$elm$html$Html$div,
@@ -11398,7 +11533,7 @@ var $author$project$Pages$Test$view = function (model) {
 						$elm$core$String$fromInt(model.attack.effortValue),
 						A2($author$project$Pages$Test$Param, $author$project$Pages$Test$SpAttack, $author$project$Pages$Test$EffortValue)),
 						$elm$html$Html$text(
-						$author$project$Pages$Test$resultView(model.attack.value))
+						$author$project$Pages$Test$resultView(model.parameters.spAttack.value))
 					])),
 				A2(
 				$elm$html$Html$div,
@@ -11424,7 +11559,7 @@ var $author$project$Pages$Test$view = function (model) {
 						$elm$core$String$fromInt(model.attack.effortValue),
 						A2($author$project$Pages$Test$Param, $author$project$Pages$Test$SpDefence, $author$project$Pages$Test$EffortValue)),
 						$elm$html$Html$text(
-						$author$project$Pages$Test$resultView(model.attack.value))
+						$author$project$Pages$Test$resultView(model.parameters.spDefence.value))
 					])),
 				A2(
 				$elm$html$Html$div,
@@ -11450,7 +11585,7 @@ var $author$project$Pages$Test$view = function (model) {
 						$elm$core$String$fromInt(model.attack.effortValue),
 						A2($author$project$Pages$Test$Param, $author$project$Pages$Test$Speed, $author$project$Pages$Test$EffortValue)),
 						$elm$html$Html$text(
-						$author$project$Pages$Test$resultView(model.attack.value))
+						$author$project$Pages$Test$resultView(model.parameters.speed.value))
 					]))
 			]),
 		title: 'pokelm'
