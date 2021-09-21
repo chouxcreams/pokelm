@@ -11182,26 +11182,129 @@ var $ryannhg$elm_spa$ElmSpa$Page$element = F2(
 				}));
 	});
 var $author$project$Page$element = $ryannhg$elm_spa$ElmSpa$Page$element($author$project$Effect$fromCmd);
+var $author$project$Pages$Test$Status = F4(
+	function (baseStats, effortValue, individualValue, value) {
+		return {baseStats: baseStats, effortValue: effortValue, individualValue: individualValue, value: value};
+	});
 var $author$project$Pages$Test$init = _Utils_Tuple2(
-	{content: ''},
+	{
+		attack: A4($author$project$Pages$Test$Status, 0, 0, 31, $elm$core$Maybe$Nothing),
+		content: '',
+		level: 50
+	},
 	$elm$core$Platform$Cmd$none);
 var $author$project$Pages$Test$subscriptions = function (model) {
 	return $elm$core$Platform$Sub$none;
 };
+var $author$project$Pages$Test$calculateStatus = F2(
+	function (level, status) {
+		var newValue = ((((((status.baseStats * 2) + status.individualValue) + ((status.effortValue / 4) | 0)) * level) / 100) | 0) + 5;
+		return _Utils_update(
+			status,
+			{
+				value: $elm$core$Maybe$Just(newValue)
+			});
+	});
+var $author$project$Pages$Test$updateStatus = F3(
+	function (category, val, status) {
+		switch (category.$) {
+			case 'BaseStats':
+				return _Utils_update(
+					status,
+					{baseStats: val});
+			case 'EffortValue':
+				return _Utils_update(
+					status,
+					{effortValue: val});
+			default:
+				return _Utils_update(
+					status,
+					{individualValue: val});
+		}
+	});
 var $author$project$Pages$Test$update = F2(
 	function (msg, model) {
-		var newContent = msg.a;
-		return _Utils_Tuple2(
-			_Utils_update(
-				model,
-				{content: newContent}),
-			$elm$core$Platform$Cmd$none);
+		var newModel = function () {
+			if (msg.$ === 'Level') {
+				var levelInput = msg.a;
+				var _v1 = $elm$core$String$toInt(levelInput);
+				if (_v1.$ === 'Nothing') {
+					return model;
+				} else {
+					var newLevel = _v1.a;
+					return _Utils_update(
+						model,
+						{level: newLevel});
+				}
+			} else {
+				var category = msg.a;
+				var valString = msg.b;
+				var _v2 = $elm$core$String$toInt(valString);
+				if (_v2.$ === 'Nothing') {
+					return model;
+				} else {
+					var val = _v2.a;
+					return _Utils_update(
+						model,
+						{
+							attack: A2(
+								$author$project$Pages$Test$calculateStatus,
+								model.level,
+								A3($author$project$Pages$Test$updateStatus, category, val, model.attack))
+						});
+				}
+			}
+		}();
+		return _Utils_Tuple2(newModel, $elm$core$Platform$Cmd$none);
 	});
-var $author$project$Pages$Test$Change = function (a) {
-	return {$: 'Change', a: a};
+var $author$project$Pages$Test$Attack = F2(
+	function (a, b) {
+		return {$: 'Attack', a: a, b: b};
+	});
+var $author$project$Pages$Test$BaseStats = {$: 'BaseStats'};
+var $author$project$Pages$Test$EffortValue = {$: 'EffortValue'};
+var $author$project$Pages$Test$IndividualValue = {$: 'IndividualValue'};
+var $author$project$Pages$Test$Level = function (a) {
+	return {$: 'Level', a: a};
+};
+var $author$project$Pages$Test$resultView = function (maybeInt) {
+	if (maybeInt.$ === 'Nothing') {
+		return '';
+	} else {
+		var val = maybeInt.a;
+		return $elm$core$String$fromInt(val);
+	}
+};
+var $author$project$Pages$Test$isValid = function (string) {
+	var _v0 = $elm$core$String$toInt(string);
+	if (_v0.$ === 'Just') {
+		return true;
+	} else {
+		return (string === '') ? true : false;
+	}
 };
 var $elm$html$Html$Attributes$placeholder = $elm$html$Html$Attributes$stringProperty('placeholder');
-var $elm$core$String$reverse = _String_reverse;
+var $author$project$Pages$Test$viewInput = F4(
+	function (t, p, v, toMsg) {
+		return $author$project$Pages$Test$isValid(v) ? A2(
+			$elm$html$Html$input,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$type_(t),
+					$elm$html$Html$Attributes$placeholder(p),
+					$elm$html$Html$Events$onInput(toMsg)
+				]),
+			_List_Nil) : A2(
+			$elm$html$Html$input,
+			_List_fromArray(
+				[
+					A2($elm$html$Html$Attributes$style, 'border-color', 'red'),
+					$elm$html$Html$Attributes$type_(t),
+					$elm$html$Html$Attributes$placeholder(p),
+					$elm$html$Html$Events$onInput(toMsg)
+				]),
+			_List_Nil);
+	});
 var $author$project$Pages$Test$view = function (model) {
 	return {
 		body: _List_fromArray(
@@ -11211,26 +11314,36 @@ var $author$project$Pages$Test$view = function (model) {
 				_List_Nil,
 				_List_fromArray(
 					[
-						A2(
-						$elm$html$Html$input,
-						_List_fromArray(
-							[
-								$elm$html$Html$Attributes$placeholder('Text to reverse'),
-								$elm$html$Html$Attributes$value(model.content),
-								$elm$html$Html$Events$onInput($author$project$Pages$Test$Change)
-							]),
-						_List_Nil),
-						A2(
-						$elm$html$Html$div,
-						_List_Nil,
-						_List_fromArray(
-							[
-								$elm$html$Html$text(
-								$elm$core$String$reverse(model.content))
-							]))
+						A4($author$project$Pages$Test$viewInput, 'text', 'level', model.content, $author$project$Pages$Test$Level)
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_Nil,
+				_List_fromArray(
+					[
+						A4(
+						$author$project$Pages$Test$viewInput,
+						'text',
+						'種族値',
+						$elm$core$String$fromInt(model.attack.baseStats),
+						$author$project$Pages$Test$Attack($author$project$Pages$Test$BaseStats)),
+						A4(
+						$author$project$Pages$Test$viewInput,
+						'text',
+						'個体値',
+						$elm$core$String$fromInt(model.attack.individualValue),
+						$author$project$Pages$Test$Attack($author$project$Pages$Test$IndividualValue)),
+						A4(
+						$author$project$Pages$Test$viewInput,
+						'text',
+						'努力値',
+						$elm$core$String$fromInt(model.attack.effortValue),
+						$author$project$Pages$Test$Attack($author$project$Pages$Test$EffortValue)),
+						$elm$html$Html$text(
+						$author$project$Pages$Test$resultView(model.attack.value))
 					]))
 			]),
-		title: 'poke_status'
+		title: 'pokelm'
 	};
 };
 var $author$project$Pages$Test$page = F2(
@@ -11269,7 +11382,7 @@ var $author$project$Pages$Home_$view = {
 		[
 			$elm$html$Html$text('Hello, world!')
 		]),
-	title: 'Homepage'
+	title: 'pokelm'
 };
 var $author$project$Pages$NotFound$view = $author$project$View$placeholder('Page not found.');
 var $author$project$Gen$Pages$pages = {
@@ -11577,4 +11690,4 @@ var $author$project$Main$view = function (model) {
 };
 var $author$project$Main$main = $elm$browser$Browser$application(
 	{init: $author$project$Main$init, onUrlChange: $author$project$Main$ChangedUrl, onUrlRequest: $author$project$Main$ClickedLink, subscriptions: $author$project$Main$subscriptions, update: $author$project$Main$update, view: $author$project$Main$view});
-_Platform_export({'Main':{'init':$author$project$Main$main($elm$json$Json$Decode$value)({"versions":{"elm":"0.19.1"},"types":{"message":"Main.Msg","aliases":{"Gen.Pages.Msg":{"args":[],"type":"Gen.Msg.Msg"},"Url.Url":{"args":[],"type":"{ protocol : Url.Protocol, host : String.String, port_ : Maybe.Maybe Basics.Int, path : String.String, query : Maybe.Maybe String.String, fragment : Maybe.Maybe String.String }"}},"unions":{"Main.Msg":{"args":[],"tags":{"ChangedUrl":["Url.Url"],"ClickedLink":["Browser.UrlRequest"],"Shared":["Shared.Msg"],"Page":["Gen.Pages.Msg"]}},"Basics.Int":{"args":[],"tags":{"Int":[]}},"Maybe.Maybe":{"args":["a"],"tags":{"Just":["a"],"Nothing":[]}},"Gen.Msg.Msg":{"args":[],"tags":{"Test":["Pages.Test.Msg"]}},"Shared.Msg":{"args":[],"tags":{"NoOp":[]}},"Url.Protocol":{"args":[],"tags":{"Http":[],"Https":[]}},"String.String":{"args":[],"tags":{"String":[]}},"Browser.UrlRequest":{"args":[],"tags":{"Internal":["Url.Url"],"External":["String.String"]}},"Pages.Test.Msg":{"args":[],"tags":{"Change":["String.String"]}}}}})}});}(this));
+_Platform_export({'Main':{'init':$author$project$Main$main($elm$json$Json$Decode$value)({"versions":{"elm":"0.19.1"},"types":{"message":"Main.Msg","aliases":{"Gen.Pages.Msg":{"args":[],"type":"Gen.Msg.Msg"},"Url.Url":{"args":[],"type":"{ protocol : Url.Protocol, host : String.String, port_ : Maybe.Maybe Basics.Int, path : String.String, query : Maybe.Maybe String.String, fragment : Maybe.Maybe String.String }"}},"unions":{"Main.Msg":{"args":[],"tags":{"ChangedUrl":["Url.Url"],"ClickedLink":["Browser.UrlRequest"],"Shared":["Shared.Msg"],"Page":["Gen.Pages.Msg"]}},"Basics.Int":{"args":[],"tags":{"Int":[]}},"Maybe.Maybe":{"args":["a"],"tags":{"Just":["a"],"Nothing":[]}},"Gen.Msg.Msg":{"args":[],"tags":{"Test":["Pages.Test.Msg"]}},"Shared.Msg":{"args":[],"tags":{"NoOp":[]}},"Url.Protocol":{"args":[],"tags":{"Http":[],"Https":[]}},"String.String":{"args":[],"tags":{"String":[]}},"Browser.UrlRequest":{"args":[],"tags":{"Internal":["Url.Url"],"External":["String.String"]}},"Pages.Test.Msg":{"args":[],"tags":{"Level":["String.String"],"Attack":["Pages.Test.StatusCategory","String.String"]}},"Pages.Test.StatusCategory":{"args":[],"tags":{"BaseStats":[],"EffortValue":[],"IndividualValue":[]}}}}})}});}(this));
