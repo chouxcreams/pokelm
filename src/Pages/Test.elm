@@ -201,44 +201,23 @@ view model =
         [ div []
             [ viewInput "text" "level" model.content Level
             ]
-        , div []
-            [ viewInput "text" "種族値" (String.fromInt model.attack.baseStats) (ChangeValue HitPoint BaseStats)
-            , viewInput "text" "個体値" (String.fromInt model.attack.individualValue) (ChangeValue HitPoint IndividualValue)
-            , viewInput "text" "努力値" (String.fromInt model.attack.effortValue) (ChangeValue HitPoint EffortValue)
-            , text (resultView model.parameters.hitPoint.value)
-            ]
-        , div []
-            [ viewInput "text" "種族値" (String.fromInt model.attack.baseStats) (ChangeValue Attack BaseStats)
-            , viewInput "text" "個体値" (String.fromInt model.attack.individualValue) (ChangeValue Attack IndividualValue)
-            , viewInput "text" "努力値" (String.fromInt model.attack.effortValue) (ChangeValue Attack EffortValue)
-            , text (resultView model.parameters.attack.value)
-            ]
-        , div []
-            [ viewInput "text" "種族値" (String.fromInt model.attack.baseStats) (ChangeValue Defence BaseStats)
-            , viewInput "text" "個体値" (String.fromInt model.attack.individualValue) (ChangeValue Defence IndividualValue)
-            , viewInput "text" "努力値" (String.fromInt model.attack.effortValue) (ChangeValue Defence EffortValue)
-            , text (resultView model.parameters.defence.value)
-            ]
-        , div []
-            [ viewInput "text" "種族値" (String.fromInt model.attack.baseStats) (ChangeValue SpAttack BaseStats)
-            , viewInput "text" "個体値" (String.fromInt model.attack.individualValue) (ChangeValue SpAttack IndividualValue)
-            , viewInput "text" "努力値" (String.fromInt model.attack.effortValue) (ChangeValue SpAttack EffortValue)
-            , text (resultView model.parameters.spAttack.value)
-            ]
-        , div []
-            [ viewInput "text" "種族値" (String.fromInt model.attack.baseStats) (ChangeValue SpDefence BaseStats)
-            , viewInput "text" "個体値" (String.fromInt model.attack.individualValue) (ChangeValue SpDefence IndividualValue)
-            , viewInput "text" "努力値" (String.fromInt model.attack.effortValue) (ChangeValue SpDefence EffortValue)
-            , text (resultView model.parameters.spDefence.value)
-            ]
-        , div []
-            [ viewInput "text" "種族値" (String.fromInt model.attack.baseStats) (ChangeValue Speed BaseStats)
-            , viewInput "text" "個体値" (String.fromInt model.attack.individualValue) (ChangeValue Speed IndividualValue)
-            , viewInput "text" "努力値" (String.fromInt model.attack.effortValue) (ChangeValue Speed EffortValue)
-            , text (resultView model.parameters.speed.value)
-            ]
+        , div [] <| viewRowInput HitPoint model
+        , div [] <| viewRowInput Attack model
+        , div [] <| viewRowInput Defence model
+        , div [] <| viewRowInput SpAttack model
+        , div [] <| viewRowInput SpDefence model
+        , div [] <| viewRowInput Speed model
         ]
     }
+
+
+viewRowInput : ParamCategory -> Model -> List (Html Msg)
+viewRowInput pc model =
+    [ viewInput "text" "種族値" (String.fromInt model.attack.baseStats) (ChangeValue pc BaseStats)
+    , viewInput "text" "個体値" (String.fromInt model.attack.individualValue) (ChangeValue pc IndividualValue)
+    , viewInput "text" "努力値" (String.fromInt model.attack.effortValue) (ChangeValue pc EffortValue)
+    , text (resultView model.parameters.hitPoint.value)
+    ]
 
 
 viewInput : String -> String -> String -> (String -> msg) -> Html msg

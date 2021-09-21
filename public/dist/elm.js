@@ -11367,29 +11367,14 @@ var $author$project$Pages$Test$update = F2(
 		return _Utils_Tuple2(newModel, $elm$core$Platform$Cmd$none);
 	});
 var $author$project$Pages$Test$Attack = {$: 'Attack'};
-var $author$project$Pages$Test$BaseStats = {$: 'BaseStats'};
-var $author$project$Pages$Test$ChangeValue = F3(
-	function (a, b, c) {
-		return {$: 'ChangeValue', a: a, b: b, c: c};
-	});
 var $author$project$Pages$Test$Defence = {$: 'Defence'};
-var $author$project$Pages$Test$EffortValue = {$: 'EffortValue'};
 var $author$project$Pages$Test$HitPoint = {$: 'HitPoint'};
-var $author$project$Pages$Test$IndividualValue = {$: 'IndividualValue'};
 var $author$project$Pages$Test$Level = function (a) {
 	return {$: 'Level', a: a};
 };
 var $author$project$Pages$Test$SpAttack = {$: 'SpAttack'};
 var $author$project$Pages$Test$SpDefence = {$: 'SpDefence'};
 var $author$project$Pages$Test$Speed = {$: 'Speed'};
-var $author$project$Pages$Test$resultView = function (maybeInt) {
-	if (maybeInt.$ === 'Nothing') {
-		return '';
-	} else {
-		var val = maybeInt.a;
-		return $elm$core$String$fromInt(val);
-	}
-};
 var $author$project$Pages$Test$isValid = function (string) {
 	var _v0 = $elm$core$String$toInt(string);
 	if (_v0.$ === 'Just') {
@@ -11420,6 +11405,47 @@ var $author$project$Pages$Test$viewInput = F4(
 				]),
 			_List_Nil);
 	});
+var $author$project$Pages$Test$BaseStats = {$: 'BaseStats'};
+var $author$project$Pages$Test$ChangeValue = F3(
+	function (a, b, c) {
+		return {$: 'ChangeValue', a: a, b: b, c: c};
+	});
+var $author$project$Pages$Test$EffortValue = {$: 'EffortValue'};
+var $author$project$Pages$Test$IndividualValue = {$: 'IndividualValue'};
+var $author$project$Pages$Test$resultView = function (maybeInt) {
+	if (maybeInt.$ === 'Nothing') {
+		return '';
+	} else {
+		var val = maybeInt.a;
+		return $elm$core$String$fromInt(val);
+	}
+};
+var $author$project$Pages$Test$viewRowInput = F2(
+	function (pc, model) {
+		return _List_fromArray(
+			[
+				A4(
+				$author$project$Pages$Test$viewInput,
+				'text',
+				'種族値',
+				$elm$core$String$fromInt(model.attack.baseStats),
+				A2($author$project$Pages$Test$ChangeValue, pc, $author$project$Pages$Test$BaseStats)),
+				A4(
+				$author$project$Pages$Test$viewInput,
+				'text',
+				'個体値',
+				$elm$core$String$fromInt(model.attack.individualValue),
+				A2($author$project$Pages$Test$ChangeValue, pc, $author$project$Pages$Test$IndividualValue)),
+				A4(
+				$author$project$Pages$Test$viewInput,
+				'text',
+				'努力値',
+				$elm$core$String$fromInt(model.attack.effortValue),
+				A2($author$project$Pages$Test$ChangeValue, pc, $author$project$Pages$Test$EffortValue)),
+				$elm$html$Html$text(
+				$author$project$Pages$Test$resultView(model.parameters.hitPoint.value))
+			]);
+	});
 var $author$project$Pages$Test$view = function (model) {
 	return {
 		body: _List_fromArray(
@@ -11434,159 +11460,27 @@ var $author$project$Pages$Test$view = function (model) {
 				A2(
 				$elm$html$Html$div,
 				_List_Nil,
-				_List_fromArray(
-					[
-						A4(
-						$author$project$Pages$Test$viewInput,
-						'text',
-						'種族値',
-						$elm$core$String$fromInt(model.attack.baseStats),
-						A2($author$project$Pages$Test$ChangeValue, $author$project$Pages$Test$HitPoint, $author$project$Pages$Test$BaseStats)),
-						A4(
-						$author$project$Pages$Test$viewInput,
-						'text',
-						'個体値',
-						$elm$core$String$fromInt(model.attack.individualValue),
-						A2($author$project$Pages$Test$ChangeValue, $author$project$Pages$Test$HitPoint, $author$project$Pages$Test$IndividualValue)),
-						A4(
-						$author$project$Pages$Test$viewInput,
-						'text',
-						'努力値',
-						$elm$core$String$fromInt(model.attack.effortValue),
-						A2($author$project$Pages$Test$ChangeValue, $author$project$Pages$Test$HitPoint, $author$project$Pages$Test$EffortValue)),
-						$elm$html$Html$text(
-						$author$project$Pages$Test$resultView(model.parameters.hitPoint.value))
-					])),
+				A2($author$project$Pages$Test$viewRowInput, $author$project$Pages$Test$HitPoint, model)),
 				A2(
 				$elm$html$Html$div,
 				_List_Nil,
-				_List_fromArray(
-					[
-						A4(
-						$author$project$Pages$Test$viewInput,
-						'text',
-						'種族値',
-						$elm$core$String$fromInt(model.attack.baseStats),
-						A2($author$project$Pages$Test$ChangeValue, $author$project$Pages$Test$Attack, $author$project$Pages$Test$BaseStats)),
-						A4(
-						$author$project$Pages$Test$viewInput,
-						'text',
-						'個体値',
-						$elm$core$String$fromInt(model.attack.individualValue),
-						A2($author$project$Pages$Test$ChangeValue, $author$project$Pages$Test$Attack, $author$project$Pages$Test$IndividualValue)),
-						A4(
-						$author$project$Pages$Test$viewInput,
-						'text',
-						'努力値',
-						$elm$core$String$fromInt(model.attack.effortValue),
-						A2($author$project$Pages$Test$ChangeValue, $author$project$Pages$Test$Attack, $author$project$Pages$Test$EffortValue)),
-						$elm$html$Html$text(
-						$author$project$Pages$Test$resultView(model.parameters.attack.value))
-					])),
+				A2($author$project$Pages$Test$viewRowInput, $author$project$Pages$Test$Attack, model)),
 				A2(
 				$elm$html$Html$div,
 				_List_Nil,
-				_List_fromArray(
-					[
-						A4(
-						$author$project$Pages$Test$viewInput,
-						'text',
-						'種族値',
-						$elm$core$String$fromInt(model.attack.baseStats),
-						A2($author$project$Pages$Test$ChangeValue, $author$project$Pages$Test$Defence, $author$project$Pages$Test$BaseStats)),
-						A4(
-						$author$project$Pages$Test$viewInput,
-						'text',
-						'個体値',
-						$elm$core$String$fromInt(model.attack.individualValue),
-						A2($author$project$Pages$Test$ChangeValue, $author$project$Pages$Test$Defence, $author$project$Pages$Test$IndividualValue)),
-						A4(
-						$author$project$Pages$Test$viewInput,
-						'text',
-						'努力値',
-						$elm$core$String$fromInt(model.attack.effortValue),
-						A2($author$project$Pages$Test$ChangeValue, $author$project$Pages$Test$Defence, $author$project$Pages$Test$EffortValue)),
-						$elm$html$Html$text(
-						$author$project$Pages$Test$resultView(model.parameters.defence.value))
-					])),
+				A2($author$project$Pages$Test$viewRowInput, $author$project$Pages$Test$Defence, model)),
 				A2(
 				$elm$html$Html$div,
 				_List_Nil,
-				_List_fromArray(
-					[
-						A4(
-						$author$project$Pages$Test$viewInput,
-						'text',
-						'種族値',
-						$elm$core$String$fromInt(model.attack.baseStats),
-						A2($author$project$Pages$Test$ChangeValue, $author$project$Pages$Test$SpAttack, $author$project$Pages$Test$BaseStats)),
-						A4(
-						$author$project$Pages$Test$viewInput,
-						'text',
-						'個体値',
-						$elm$core$String$fromInt(model.attack.individualValue),
-						A2($author$project$Pages$Test$ChangeValue, $author$project$Pages$Test$SpAttack, $author$project$Pages$Test$IndividualValue)),
-						A4(
-						$author$project$Pages$Test$viewInput,
-						'text',
-						'努力値',
-						$elm$core$String$fromInt(model.attack.effortValue),
-						A2($author$project$Pages$Test$ChangeValue, $author$project$Pages$Test$SpAttack, $author$project$Pages$Test$EffortValue)),
-						$elm$html$Html$text(
-						$author$project$Pages$Test$resultView(model.parameters.spAttack.value))
-					])),
+				A2($author$project$Pages$Test$viewRowInput, $author$project$Pages$Test$SpAttack, model)),
 				A2(
 				$elm$html$Html$div,
 				_List_Nil,
-				_List_fromArray(
-					[
-						A4(
-						$author$project$Pages$Test$viewInput,
-						'text',
-						'種族値',
-						$elm$core$String$fromInt(model.attack.baseStats),
-						A2($author$project$Pages$Test$ChangeValue, $author$project$Pages$Test$SpDefence, $author$project$Pages$Test$BaseStats)),
-						A4(
-						$author$project$Pages$Test$viewInput,
-						'text',
-						'個体値',
-						$elm$core$String$fromInt(model.attack.individualValue),
-						A2($author$project$Pages$Test$ChangeValue, $author$project$Pages$Test$SpDefence, $author$project$Pages$Test$IndividualValue)),
-						A4(
-						$author$project$Pages$Test$viewInput,
-						'text',
-						'努力値',
-						$elm$core$String$fromInt(model.attack.effortValue),
-						A2($author$project$Pages$Test$ChangeValue, $author$project$Pages$Test$SpDefence, $author$project$Pages$Test$EffortValue)),
-						$elm$html$Html$text(
-						$author$project$Pages$Test$resultView(model.parameters.spDefence.value))
-					])),
+				A2($author$project$Pages$Test$viewRowInput, $author$project$Pages$Test$SpDefence, model)),
 				A2(
 				$elm$html$Html$div,
 				_List_Nil,
-				_List_fromArray(
-					[
-						A4(
-						$author$project$Pages$Test$viewInput,
-						'text',
-						'種族値',
-						$elm$core$String$fromInt(model.attack.baseStats),
-						A2($author$project$Pages$Test$ChangeValue, $author$project$Pages$Test$Speed, $author$project$Pages$Test$BaseStats)),
-						A4(
-						$author$project$Pages$Test$viewInput,
-						'text',
-						'個体値',
-						$elm$core$String$fromInt(model.attack.individualValue),
-						A2($author$project$Pages$Test$ChangeValue, $author$project$Pages$Test$Speed, $author$project$Pages$Test$IndividualValue)),
-						A4(
-						$author$project$Pages$Test$viewInput,
-						'text',
-						'努力値',
-						$elm$core$String$fromInt(model.attack.effortValue),
-						A2($author$project$Pages$Test$ChangeValue, $author$project$Pages$Test$Speed, $author$project$Pages$Test$EffortValue)),
-						$elm$html$Html$text(
-						$author$project$Pages$Test$resultView(model.parameters.speed.value))
-					]))
+				A2($author$project$Pages$Test$viewRowInput, $author$project$Pages$Test$Speed, model))
 			]),
 		title: 'pokelm'
 	};
