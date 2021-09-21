@@ -11368,6 +11368,10 @@ var $author$project$Pages$Test$update = F2(
 	});
 var $author$project$Pages$Test$Attack = {$: 'Attack'};
 var $author$project$Pages$Test$BaseStats = {$: 'BaseStats'};
+var $author$project$Pages$Test$ChangeValue = F3(
+	function (a, b, c) {
+		return {$: 'ChangeValue', a: a, b: b, c: c};
+	});
 var $author$project$Pages$Test$Defence = {$: 'Defence'};
 var $author$project$Pages$Test$EffortValue = {$: 'EffortValue'};
 var $author$project$Pages$Test$HitPoint = {$: 'HitPoint'};
@@ -11375,10 +11379,6 @@ var $author$project$Pages$Test$IndividualValue = {$: 'IndividualValue'};
 var $author$project$Pages$Test$Level = function (a) {
 	return {$: 'Level', a: a};
 };
-var $author$project$Pages$Test$Param = F3(
-	function (a, b, c) {
-		return {$: 'Param', a: a, b: b, c: c};
-	});
 var $author$project$Pages$Test$SpAttack = {$: 'SpAttack'};
 var $author$project$Pages$Test$SpDefence = {$: 'SpDefence'};
 var $author$project$Pages$Test$Speed = {$: 'Speed'};
@@ -11441,19 +11441,19 @@ var $author$project$Pages$Test$view = function (model) {
 						'text',
 						'種族値',
 						$elm$core$String$fromInt(model.attack.baseStats),
-						A2($author$project$Pages$Test$Param, $author$project$Pages$Test$HitPoint, $author$project$Pages$Test$BaseStats)),
+						A2($author$project$Pages$Test$ChangeValue, $author$project$Pages$Test$HitPoint, $author$project$Pages$Test$BaseStats)),
 						A4(
 						$author$project$Pages$Test$viewInput,
 						'text',
 						'個体値',
 						$elm$core$String$fromInt(model.attack.individualValue),
-						A2($author$project$Pages$Test$Param, $author$project$Pages$Test$HitPoint, $author$project$Pages$Test$IndividualValue)),
+						A2($author$project$Pages$Test$ChangeValue, $author$project$Pages$Test$HitPoint, $author$project$Pages$Test$IndividualValue)),
 						A4(
 						$author$project$Pages$Test$viewInput,
 						'text',
 						'努力値',
 						$elm$core$String$fromInt(model.attack.effortValue),
-						A2($author$project$Pages$Test$Param, $author$project$Pages$Test$HitPoint, $author$project$Pages$Test$EffortValue)),
+						A2($author$project$Pages$Test$ChangeValue, $author$project$Pages$Test$HitPoint, $author$project$Pages$Test$EffortValue)),
 						$elm$html$Html$text(
 						$author$project$Pages$Test$resultView(model.parameters.hitPoint.value))
 					])),
@@ -11467,19 +11467,19 @@ var $author$project$Pages$Test$view = function (model) {
 						'text',
 						'種族値',
 						$elm$core$String$fromInt(model.attack.baseStats),
-						A2($author$project$Pages$Test$Param, $author$project$Pages$Test$Attack, $author$project$Pages$Test$BaseStats)),
+						A2($author$project$Pages$Test$ChangeValue, $author$project$Pages$Test$Attack, $author$project$Pages$Test$BaseStats)),
 						A4(
 						$author$project$Pages$Test$viewInput,
 						'text',
 						'個体値',
 						$elm$core$String$fromInt(model.attack.individualValue),
-						A2($author$project$Pages$Test$Param, $author$project$Pages$Test$Attack, $author$project$Pages$Test$IndividualValue)),
+						A2($author$project$Pages$Test$ChangeValue, $author$project$Pages$Test$Attack, $author$project$Pages$Test$IndividualValue)),
 						A4(
 						$author$project$Pages$Test$viewInput,
 						'text',
 						'努力値',
 						$elm$core$String$fromInt(model.attack.effortValue),
-						A2($author$project$Pages$Test$Param, $author$project$Pages$Test$Attack, $author$project$Pages$Test$EffortValue)),
+						A2($author$project$Pages$Test$ChangeValue, $author$project$Pages$Test$Attack, $author$project$Pages$Test$EffortValue)),
 						$elm$html$Html$text(
 						$author$project$Pages$Test$resultView(model.parameters.attack.value))
 					])),
@@ -11493,19 +11493,19 @@ var $author$project$Pages$Test$view = function (model) {
 						'text',
 						'種族値',
 						$elm$core$String$fromInt(model.attack.baseStats),
-						A2($author$project$Pages$Test$Param, $author$project$Pages$Test$Defence, $author$project$Pages$Test$BaseStats)),
+						A2($author$project$Pages$Test$ChangeValue, $author$project$Pages$Test$Defence, $author$project$Pages$Test$BaseStats)),
 						A4(
 						$author$project$Pages$Test$viewInput,
 						'text',
 						'個体値',
 						$elm$core$String$fromInt(model.attack.individualValue),
-						A2($author$project$Pages$Test$Param, $author$project$Pages$Test$Defence, $author$project$Pages$Test$IndividualValue)),
+						A2($author$project$Pages$Test$ChangeValue, $author$project$Pages$Test$Defence, $author$project$Pages$Test$IndividualValue)),
 						A4(
 						$author$project$Pages$Test$viewInput,
 						'text',
 						'努力値',
 						$elm$core$String$fromInt(model.attack.effortValue),
-						A2($author$project$Pages$Test$Param, $author$project$Pages$Test$Defence, $author$project$Pages$Test$EffortValue)),
+						A2($author$project$Pages$Test$ChangeValue, $author$project$Pages$Test$Defence, $author$project$Pages$Test$EffortValue)),
 						$elm$html$Html$text(
 						$author$project$Pages$Test$resultView(model.parameters.defence.value))
 					])),
@@ -11519,19 +11519,19 @@ var $author$project$Pages$Test$view = function (model) {
 						'text',
 						'種族値',
 						$elm$core$String$fromInt(model.attack.baseStats),
-						A2($author$project$Pages$Test$Param, $author$project$Pages$Test$SpAttack, $author$project$Pages$Test$BaseStats)),
+						A2($author$project$Pages$Test$ChangeValue, $author$project$Pages$Test$SpAttack, $author$project$Pages$Test$BaseStats)),
 						A4(
 						$author$project$Pages$Test$viewInput,
 						'text',
 						'個体値',
 						$elm$core$String$fromInt(model.attack.individualValue),
-						A2($author$project$Pages$Test$Param, $author$project$Pages$Test$SpAttack, $author$project$Pages$Test$IndividualValue)),
+						A2($author$project$Pages$Test$ChangeValue, $author$project$Pages$Test$SpAttack, $author$project$Pages$Test$IndividualValue)),
 						A4(
 						$author$project$Pages$Test$viewInput,
 						'text',
 						'努力値',
 						$elm$core$String$fromInt(model.attack.effortValue),
-						A2($author$project$Pages$Test$Param, $author$project$Pages$Test$SpAttack, $author$project$Pages$Test$EffortValue)),
+						A2($author$project$Pages$Test$ChangeValue, $author$project$Pages$Test$SpAttack, $author$project$Pages$Test$EffortValue)),
 						$elm$html$Html$text(
 						$author$project$Pages$Test$resultView(model.parameters.spAttack.value))
 					])),
@@ -11545,19 +11545,19 @@ var $author$project$Pages$Test$view = function (model) {
 						'text',
 						'種族値',
 						$elm$core$String$fromInt(model.attack.baseStats),
-						A2($author$project$Pages$Test$Param, $author$project$Pages$Test$SpDefence, $author$project$Pages$Test$BaseStats)),
+						A2($author$project$Pages$Test$ChangeValue, $author$project$Pages$Test$SpDefence, $author$project$Pages$Test$BaseStats)),
 						A4(
 						$author$project$Pages$Test$viewInput,
 						'text',
 						'個体値',
 						$elm$core$String$fromInt(model.attack.individualValue),
-						A2($author$project$Pages$Test$Param, $author$project$Pages$Test$SpDefence, $author$project$Pages$Test$IndividualValue)),
+						A2($author$project$Pages$Test$ChangeValue, $author$project$Pages$Test$SpDefence, $author$project$Pages$Test$IndividualValue)),
 						A4(
 						$author$project$Pages$Test$viewInput,
 						'text',
 						'努力値',
 						$elm$core$String$fromInt(model.attack.effortValue),
-						A2($author$project$Pages$Test$Param, $author$project$Pages$Test$SpDefence, $author$project$Pages$Test$EffortValue)),
+						A2($author$project$Pages$Test$ChangeValue, $author$project$Pages$Test$SpDefence, $author$project$Pages$Test$EffortValue)),
 						$elm$html$Html$text(
 						$author$project$Pages$Test$resultView(model.parameters.spDefence.value))
 					])),
@@ -11571,19 +11571,19 @@ var $author$project$Pages$Test$view = function (model) {
 						'text',
 						'種族値',
 						$elm$core$String$fromInt(model.attack.baseStats),
-						A2($author$project$Pages$Test$Param, $author$project$Pages$Test$Speed, $author$project$Pages$Test$BaseStats)),
+						A2($author$project$Pages$Test$ChangeValue, $author$project$Pages$Test$Speed, $author$project$Pages$Test$BaseStats)),
 						A4(
 						$author$project$Pages$Test$viewInput,
 						'text',
 						'個体値',
 						$elm$core$String$fromInt(model.attack.individualValue),
-						A2($author$project$Pages$Test$Param, $author$project$Pages$Test$Speed, $author$project$Pages$Test$IndividualValue)),
+						A2($author$project$Pages$Test$ChangeValue, $author$project$Pages$Test$Speed, $author$project$Pages$Test$IndividualValue)),
 						A4(
 						$author$project$Pages$Test$viewInput,
 						'text',
 						'努力値',
 						$elm$core$String$fromInt(model.attack.effortValue),
-						A2($author$project$Pages$Test$Param, $author$project$Pages$Test$Speed, $author$project$Pages$Test$EffortValue)),
+						A2($author$project$Pages$Test$ChangeValue, $author$project$Pages$Test$Speed, $author$project$Pages$Test$EffortValue)),
 						$elm$html$Html$text(
 						$author$project$Pages$Test$resultView(model.parameters.speed.value))
 					]))
@@ -11935,4 +11935,4 @@ var $author$project$Main$view = function (model) {
 };
 var $author$project$Main$main = $elm$browser$Browser$application(
 	{init: $author$project$Main$init, onUrlChange: $author$project$Main$ChangedUrl, onUrlRequest: $author$project$Main$ClickedLink, subscriptions: $author$project$Main$subscriptions, update: $author$project$Main$update, view: $author$project$Main$view});
-_Platform_export({'Main':{'init':$author$project$Main$main($elm$json$Json$Decode$value)({"versions":{"elm":"0.19.1"},"types":{"message":"Main.Msg","aliases":{"Gen.Pages.Msg":{"args":[],"type":"Gen.Msg.Msg"},"Url.Url":{"args":[],"type":"{ protocol : Url.Protocol, host : String.String, port_ : Maybe.Maybe Basics.Int, path : String.String, query : Maybe.Maybe String.String, fragment : Maybe.Maybe String.String }"}},"unions":{"Main.Msg":{"args":[],"tags":{"ChangedUrl":["Url.Url"],"ClickedLink":["Browser.UrlRequest"],"Shared":["Shared.Msg"],"Page":["Gen.Pages.Msg"]}},"Basics.Int":{"args":[],"tags":{"Int":[]}},"Maybe.Maybe":{"args":["a"],"tags":{"Just":["a"],"Nothing":[]}},"Gen.Msg.Msg":{"args":[],"tags":{"Test":["Pages.Test.Msg"]}},"Shared.Msg":{"args":[],"tags":{"NoOp":[]}},"Url.Protocol":{"args":[],"tags":{"Http":[],"Https":[]}},"String.String":{"args":[],"tags":{"String":[]}},"Browser.UrlRequest":{"args":[],"tags":{"Internal":["Url.Url"],"External":["String.String"]}},"Pages.Test.Msg":{"args":[],"tags":{"Level":["String.String"],"Param":["Pages.Test.ParamCategory","Pages.Test.StatusCategory","String.String"]}},"Pages.Test.ParamCategory":{"args":[],"tags":{"HitPoint":[],"Attack":[],"Defence":[],"SpAttack":[],"SpDefence":[],"Speed":[]}},"Pages.Test.StatusCategory":{"args":[],"tags":{"BaseStats":[],"EffortValue":[],"IndividualValue":[]}}}}})}});}(this));
+_Platform_export({'Main':{'init':$author$project$Main$main($elm$json$Json$Decode$value)({"versions":{"elm":"0.19.1"},"types":{"message":"Main.Msg","aliases":{"Gen.Pages.Msg":{"args":[],"type":"Gen.Msg.Msg"},"Url.Url":{"args":[],"type":"{ protocol : Url.Protocol, host : String.String, port_ : Maybe.Maybe Basics.Int, path : String.String, query : Maybe.Maybe String.String, fragment : Maybe.Maybe String.String }"}},"unions":{"Main.Msg":{"args":[],"tags":{"ChangedUrl":["Url.Url"],"ClickedLink":["Browser.UrlRequest"],"Shared":["Shared.Msg"],"Page":["Gen.Pages.Msg"]}},"Basics.Int":{"args":[],"tags":{"Int":[]}},"Maybe.Maybe":{"args":["a"],"tags":{"Just":["a"],"Nothing":[]}},"Gen.Msg.Msg":{"args":[],"tags":{"Test":["Pages.Test.Msg"]}},"Shared.Msg":{"args":[],"tags":{"NoOp":[]}},"Url.Protocol":{"args":[],"tags":{"Http":[],"Https":[]}},"String.String":{"args":[],"tags":{"String":[]}},"Browser.UrlRequest":{"args":[],"tags":{"Internal":["Url.Url"],"External":["String.String"]}},"Pages.Test.Msg":{"args":[],"tags":{"Level":["String.String"],"ChangeValue":["Pages.Test.ParamCategory","Pages.Test.StatusCategory","String.String"]}},"Pages.Test.ParamCategory":{"args":[],"tags":{"HitPoint":[],"Attack":[],"Defence":[],"SpAttack":[],"SpDefence":[],"Speed":[]}},"Pages.Test.StatusCategory":{"args":[],"tags":{"BaseStats":[],"EffortValue":[],"IndividualValue":[]}}}}})}});}(this));
