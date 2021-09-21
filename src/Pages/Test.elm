@@ -199,3 +199,34 @@ isValid string =
 
             else
                 False
+
+validateLevel: String -> Bool
+validateLevel input =
+    case String.toInt input of
+        Nothing ->
+            False
+        Just level ->
+            True
+
+validateStatusValue: StatusCategory -> String -> Bool
+validateStatusValue statusCategory input =
+    case String.toInt input of
+        Nothing ->
+            False
+        Just val ->
+            case statusCategory of
+                EffortValue ->
+                    validateEffortValue val
+                BaseStats ->
+                    True
+                IndividualValue ->
+                    validateIndividualValue val
+
+validateEffortValue: Int -> Bool
+validateEffortValue ev =
+    ev <= 252 && ev >= 0
+
+validateIndividualValue: Int -> Bool
+validateIndividualValue iv =
+    iv <= 31 && iv >= 0
+
