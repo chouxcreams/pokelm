@@ -11183,8 +11183,8 @@ var $ryannhg$elm_spa$ElmSpa$Page$element = F2(
 	});
 var $author$project$Page$element = $ryannhg$elm_spa$ElmSpa$Page$element($author$project$Effect$fromCmd);
 var $author$project$Pages$Test$Status = F4(
-	function (baseStats, effortValue, individualValue, value) {
-		return {baseStats: baseStats, effortValue: effortValue, individualValue: individualValue, value: value};
+	function (baseStats, effortValue, individualValue, realNumber) {
+		return {baseStats: baseStats, effortValue: effortValue, individualValue: individualValue, realNumber: realNumber};
 	});
 var $author$project$Pages$Test$init = _Utils_Tuple2(
 	{
@@ -11216,7 +11216,7 @@ var $author$project$Pages$Test$calculateStatus = F3(
 		return _Utils_update(
 			status,
 			{
-				value: $elm$core$Maybe$Just(newValue)
+				realNumber: $elm$core$Maybe$Just(newValue)
 			});
 	});
 var $author$project$Pages$Test$updateStatus = F3(
@@ -11412,23 +11412,34 @@ var $author$project$Pages$Test$ChangeValue = F3(
 	});
 var $author$project$Pages$Test$EffortValue = {$: 'EffortValue'};
 var $author$project$Pages$Test$IndividualValue = {$: 'IndividualValue'};
-var $author$project$Pages$Test$getStatusFromParameters = F2(
-	function (pc, params) {
-		switch (pc.$) {
-			case 'HitPoint':
-				return params.hitPoint;
-			case 'Attack':
-				return params.attack;
-			case 'Defence':
-				return params.defence;
-			case 'SpAttack':
-				return params.spAttack;
-			case 'SpDefence':
-				return params.spDefence;
-			default:
-				return params.speed;
-		}
-	});
+var $author$project$Pages$Test$getParamFieldAccess = function (pc) {
+	switch (pc.$) {
+		case 'HitPoint':
+			return function ($) {
+				return $.hitPoint;
+			};
+		case 'Attack':
+			return function ($) {
+				return $.attack;
+			};
+		case 'Defence':
+			return function ($) {
+				return $.defence;
+			};
+		case 'SpAttack':
+			return function ($) {
+				return $.spAttack;
+			};
+		case 'SpDefence':
+			return function ($) {
+				return $.spDefence;
+			};
+		default:
+			return function ($) {
+				return $.speed;
+			};
+	}
+};
 var $author$project$Pages$Test$resultView = function (maybeInt) {
 	if (maybeInt.$ === 'Nothing') {
 		return '';
@@ -11461,7 +11472,7 @@ var $author$project$Pages$Test$viewRowInput = F2(
 				A2($author$project$Pages$Test$ChangeValue, pc, $author$project$Pages$Test$EffortValue)),
 				$elm$html$Html$text(
 				$author$project$Pages$Test$resultView(
-					A2($author$project$Pages$Test$getStatusFromParameters, pc, model.parameters).value))
+					A2($author$project$Pages$Test$getParamFieldAccess, pc, model.parameters).realNumber))
 			]);
 	});
 var $author$project$Pages$Test$view = function (model) {

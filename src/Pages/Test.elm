@@ -25,7 +25,7 @@ page shared req =
 
 
 type alias Status =
-    { baseStats : Int, effortValue : Int, individualValue : Int, value : Maybe Int }
+    { baseStats : Int, effortValue : Int, individualValue : Int, realNumber : Maybe Int }
 
 
 type alias Parameters =
@@ -89,7 +89,7 @@ calculateStatus level paramCategory status =
                 _ ->
                     (status.baseStats * 2 + status.individualValue + status.effortValue // 4) * level // 100 + 5
     in
-    { status | value = Just newValue }
+    { status | realNumber = Just newValue }
 
 
 updateStatus : StatusCategory -> Int -> Status -> Status
@@ -105,26 +105,26 @@ updateStatus category val status =
             { status | individualValue = val }
 
 
-getStatusFromParameters : ParamCategory -> Parameters -> Status
-getStatusFromParameters pc params =
+getParamFieldAccess : ParamCategory -> (Parameters -> Status)
+getParamFieldAccess pc =
     case pc of
         HitPoint ->
-            params.hitPoint
+            .hitPoint
 
         Attack ->
-            params.attack
+            .attack
 
         Defence ->
-            params.defence
+            .defence
 
         SpAttack ->
-            params.spAttack
+            .spAttack
 
         SpDefence ->
-            params.spDefence
+            .spDefence
 
         Speed ->
-            params.speed
+            .speed
 
 
 updateParams : ParamCategory -> StatusCategory -> Int -> Int -> Parameters -> Parameters
@@ -198,7 +198,11 @@ update msg model =
                             model
 
                         Just val ->
-                            { model | parameters = updateParams paramCategory statusCategory val model.level model.parameters }
+                            { model
+                                | parameters =
+                                    model.parameters
+                                        |> updateParams paramCategory statusCategory val model.level
+                            }
     in
     ( newModel, Cmd.none )
 
@@ -238,7 +242,7 @@ viewRowInput pc model =
     [ viewInput "text" "種族値" (String.fromInt model.attack.baseStats) (ChangeValue pc BaseStats)
     , viewInput "text" "個体値" (String.fromInt model.attack.individualValue) (ChangeValue pc IndividualValue)
     , viewInput "text" "努力値" (String.fromInt model.attack.effortValue) (ChangeValue pc EffortValue)
-    , text (resultView <| .value <| getStatusFromParameters pc model.parameters)
+    , text <| resultView <| .realNumber <| getParamFieldAccess pc <| model.parameters
     ]
 
 
