@@ -11186,31 +11186,84 @@ var $author$project$Pages$Test$Status = F4(
 	function (baseStats, effortValue, individualValue, realNumber) {
 		return {baseStats: baseStats, effortValue: effortValue, individualValue: individualValue, realNumber: realNumber};
 	});
+var $author$project$Pages$Test$Value = F2(
+	function (value, input) {
+		return {input: input, value: value};
+	});
+var $author$project$Pages$Test$initValue = function (val) {
+	return A2(
+		$author$project$Pages$Test$Value,
+		val,
+		$elm$core$String$fromInt(val));
+};
+var $author$project$Pages$Test$initStatus = A4(
+	$author$project$Pages$Test$Status,
+	$author$project$Pages$Test$initValue(0),
+	$author$project$Pages$Test$initValue(0),
+	$author$project$Pages$Test$initValue(31),
+	$elm$core$Maybe$Nothing);
 var $author$project$Pages$Test$init = _Utils_Tuple2(
 	{
-		attack: A4($author$project$Pages$Test$Status, 0, 0, 31, $elm$core$Maybe$Nothing),
+		attack: $author$project$Pages$Test$initStatus,
 		content: '',
 		level: 50,
-		parameters: {
-			attack: A4($author$project$Pages$Test$Status, 0, 0, 31, $elm$core$Maybe$Nothing),
-			defence: A4($author$project$Pages$Test$Status, 0, 0, 31, $elm$core$Maybe$Nothing),
-			hitPoint: A4($author$project$Pages$Test$Status, 0, 0, 31, $elm$core$Maybe$Nothing),
-			spAttack: A4($author$project$Pages$Test$Status, 0, 0, 31, $elm$core$Maybe$Nothing),
-			spDefence: A4($author$project$Pages$Test$Status, 0, 0, 31, $elm$core$Maybe$Nothing),
-			speed: A4($author$project$Pages$Test$Status, 0, 0, 31, $elm$core$Maybe$Nothing)
-		}
+		parameters: {attack: $author$project$Pages$Test$initStatus, defence: $author$project$Pages$Test$initStatus, hitPoint: $author$project$Pages$Test$initStatus, spAttack: $author$project$Pages$Test$initStatus, spDefence: $author$project$Pages$Test$initStatus, speed: $author$project$Pages$Test$initStatus}
 	},
 	$elm$core$Platform$Cmd$none);
 var $author$project$Pages$Test$subscriptions = function (model) {
 	return $elm$core$Platform$Sub$none;
 };
+var $author$project$Pages$Test$accessFieldStatus = function (pc) {
+	switch (pc.$) {
+		case 'HitPoint':
+			return function ($) {
+				return $.hitPoint;
+			};
+		case 'Attack':
+			return function ($) {
+				return $.attack;
+			};
+		case 'Defence':
+			return function ($) {
+				return $.defence;
+			};
+		case 'SpAttack':
+			return function ($) {
+				return $.spAttack;
+			};
+		case 'SpDefence':
+			return function ($) {
+				return $.spDefence;
+			};
+		default:
+			return function ($) {
+				return $.speed;
+			};
+	}
+};
+var $author$project$Pages$Test$accessFieldValue = function (sc) {
+	switch (sc.$) {
+		case 'BaseStats':
+			return function ($) {
+				return $.baseStats;
+			};
+		case 'EffortValue':
+			return function ($) {
+				return $.effortValue;
+			};
+		default:
+			return function ($) {
+				return $.individualValue;
+			};
+	}
+};
 var $author$project$Pages$Test$calculateStatus = F3(
 	function (level, paramCategory, status) {
 		var newValue = function () {
 			if (paramCategory.$ === 'HitPoint') {
-				return (((((((status.baseStats * 2) + status.individualValue) + ((status.effortValue / 4) | 0)) * level) / 100) | 0) + level) + 10;
+				return (((((((status.baseStats.value * 2) + status.individualValue.value) + ((status.effortValue.value / 4) | 0)) * level) / 100) | 0) + level) + 10;
 			} else {
-				return ((((((status.baseStats * 2) + status.individualValue) + ((status.effortValue / 4) | 0)) * level) / 100) | 0) + 5;
+				return ((((((status.baseStats.value * 2) + status.individualValue.value) + ((status.effortValue.value / 4) | 0)) * level) / 100) | 0) + 5;
 			}
 		}();
 		return _Utils_update(
@@ -11219,86 +11272,62 @@ var $author$project$Pages$Test$calculateStatus = F3(
 				realNumber: $elm$core$Maybe$Just(newValue)
 			});
 	});
+var $author$project$Pages$Test$updateParam = F3(
+	function (pc, params, status) {
+		switch (pc.$) {
+			case 'HitPoint':
+				return _Utils_update(
+					params,
+					{hitPoint: status});
+			case 'Attack':
+				return _Utils_update(
+					params,
+					{attack: status});
+			case 'Defence':
+				return _Utils_update(
+					params,
+					{defence: status});
+			case 'SpAttack':
+				return _Utils_update(
+					params,
+					{spAttack: status});
+			case 'SpDefence':
+				return _Utils_update(
+					params,
+					{spDefence: status});
+			default:
+				return _Utils_update(
+					params,
+					{speed: status});
+		}
+	});
 var $author$project$Pages$Test$updateStatus = F3(
-	function (category, val, status) {
+	function (category, status, value) {
 		switch (category.$) {
 			case 'BaseStats':
 				return _Utils_update(
 					status,
-					{baseStats: val});
+					{baseStats: value});
 			case 'EffortValue':
 				return _Utils_update(
 					status,
-					{effortValue: val});
+					{effortValue: value});
 			default:
 				return _Utils_update(
 					status,
-					{individualValue: val});
+					{individualValue: value});
 		}
 	});
-var $author$project$Pages$Test$updateParams = F5(
-	function (paramCategory, statusCategory, val, level, params) {
-		switch (paramCategory.$) {
-			case 'HitPoint':
-				return _Utils_update(
-					params,
-					{
-						hitPoint: A3(
-							$author$project$Pages$Test$calculateStatus,
-							level,
-							paramCategory,
-							A3($author$project$Pages$Test$updateStatus, statusCategory, val, params.hitPoint))
-					});
-			case 'Attack':
-				return _Utils_update(
-					params,
-					{
-						attack: A3(
-							$author$project$Pages$Test$calculateStatus,
-							level,
-							paramCategory,
-							A3($author$project$Pages$Test$updateStatus, statusCategory, val, params.attack))
-					});
-			case 'Defence':
-				return _Utils_update(
-					params,
-					{
-						defence: A3(
-							$author$project$Pages$Test$calculateStatus,
-							level,
-							paramCategory,
-							A3($author$project$Pages$Test$updateStatus, statusCategory, val, params.defence))
-					});
-			case 'SpAttack':
-				return _Utils_update(
-					params,
-					{
-						spAttack: A3(
-							$author$project$Pages$Test$calculateStatus,
-							level,
-							paramCategory,
-							A3($author$project$Pages$Test$updateStatus, statusCategory, val, params.spAttack))
-					});
-			case 'SpDefence':
-				return _Utils_update(
-					params,
-					{
-						spDefence: A3(
-							$author$project$Pages$Test$calculateStatus,
-							level,
-							paramCategory,
-							A3($author$project$Pages$Test$updateStatus, statusCategory, val, params.spDefence))
-					});
-			default:
-				return _Utils_update(
-					params,
-					{
-						speed: A3(
-							$author$project$Pages$Test$calculateStatus,
-							level,
-							paramCategory,
-							A3($author$project$Pages$Test$updateStatus, statusCategory, val, params.speed))
-					});
+var $author$project$Pages$Test$updateValue = F2(
+	function (input, value) {
+		var _v0 = $elm$core$String$toInt(input);
+		if (_v0.$ === 'Just') {
+			var num = _v0.a;
+			return A2($author$project$Pages$Test$Value, num, input);
+		} else {
+			return _Utils_update(
+				value,
+				{input: input});
 		}
 	});
 var $author$project$Pages$Test$validateLevel = function (input) {
@@ -11310,29 +11339,6 @@ var $author$project$Pages$Test$validateLevel = function (input) {
 		return (level >= 1) ? $elm$core$Maybe$Just(level) : $elm$core$Maybe$Nothing;
 	}
 };
-var $author$project$Pages$Test$validateEffortValue = function (ev) {
-	return ((ev <= 252) && (ev >= 0)) ? $elm$core$Maybe$Just(ev) : $elm$core$Maybe$Nothing;
-};
-var $author$project$Pages$Test$validateIndividualValue = function (iv) {
-	return ((iv <= 31) && (iv >= 0)) ? $elm$core$Maybe$Just(iv) : $elm$core$Maybe$Nothing;
-};
-var $author$project$Pages$Test$validateStatusValue = F2(
-	function (statusCategory, input) {
-		var _v0 = $elm$core$String$toInt(input);
-		if (_v0.$ === 'Nothing') {
-			return $elm$core$Maybe$Nothing;
-		} else {
-			var val = _v0.a;
-			switch (statusCategory.$) {
-				case 'EffortValue':
-					return $author$project$Pages$Test$validateEffortValue(val);
-				case 'BaseStats':
-					return $elm$core$Maybe$Just(val);
-				default:
-					return $author$project$Pages$Test$validateIndividualValue(val);
-			}
-		}
-	});
 var $author$project$Pages$Test$update = F2(
 	function (msg, model) {
 		var newModel = function () {
@@ -11348,20 +11354,32 @@ var $author$project$Pages$Test$update = F2(
 						{level: newLevel});
 				}
 			} else {
-				var paramCategory = msg.a;
-				var statusCategory = msg.b;
+				var pc = msg.a;
+				var sc = msg.b;
 				var input = msg.c;
-				var _v2 = A2($author$project$Pages$Test$validateStatusValue, statusCategory, input);
-				if (_v2.$ === 'Nothing') {
-					return model;
-				} else {
-					var val = _v2.a;
-					return _Utils_update(
-						model,
-						{
-							parameters: A5($author$project$Pages$Test$updateParams, paramCategory, statusCategory, val, model.level, model.parameters)
-						});
-				}
+				return _Utils_update(
+					model,
+					{
+						parameters: function () {
+							var statusToUpdate = A2($author$project$Pages$Test$accessFieldStatus, pc, model.parameters);
+							return A3(
+								$author$project$Pages$Test$updateParam,
+								pc,
+								model.parameters,
+								A3(
+									$author$project$Pages$Test$calculateStatus,
+									model.level,
+									pc,
+									A3(
+										$author$project$Pages$Test$updateStatus,
+										sc,
+										statusToUpdate,
+										A2(
+											$author$project$Pages$Test$updateValue,
+											input,
+											A2($author$project$Pages$Test$accessFieldValue, sc, statusToUpdate)))));
+						}()
+					});
 			}
 		}();
 		return _Utils_Tuple2(newModel, $elm$core$Platform$Cmd$none);
@@ -11412,34 +11430,6 @@ var $author$project$Pages$Test$ChangeValue = F3(
 	});
 var $author$project$Pages$Test$EffortValue = {$: 'EffortValue'};
 var $author$project$Pages$Test$IndividualValue = {$: 'IndividualValue'};
-var $author$project$Pages$Test$getParamFieldAccess = function (pc) {
-	switch (pc.$) {
-		case 'HitPoint':
-			return function ($) {
-				return $.hitPoint;
-			};
-		case 'Attack':
-			return function ($) {
-				return $.attack;
-			};
-		case 'Defence':
-			return function ($) {
-				return $.defence;
-			};
-		case 'SpAttack':
-			return function ($) {
-				return $.spAttack;
-			};
-		case 'SpDefence':
-			return function ($) {
-				return $.spDefence;
-			};
-		default:
-			return function ($) {
-				return $.speed;
-			};
-	}
-};
 var $author$project$Pages$Test$resultView = function (maybeInt) {
 	if (maybeInt.$ === 'Nothing') {
 		return '';
@@ -11448,31 +11438,85 @@ var $author$project$Pages$Test$resultView = function (maybeInt) {
 		return $elm$core$String$fromInt(val);
 	}
 };
+var $author$project$Pages$Test$validateEffortValue = function (ev) {
+	return ((ev <= 252) && (ev >= 0)) ? $elm$core$Maybe$Just(ev) : $elm$core$Maybe$Nothing;
+};
+var $author$project$Pages$Test$validateIndividualValue = function (iv) {
+	return ((iv <= 31) && (iv >= 0)) ? $elm$core$Maybe$Just(iv) : $elm$core$Maybe$Nothing;
+};
+var $author$project$Pages$Test$validateStatusInput = F2(
+	function (statusCategory, input) {
+		var _v0 = $elm$core$String$toInt(input);
+		if (_v0.$ === 'Nothing') {
+			return $elm$core$Maybe$Nothing;
+		} else {
+			var val = _v0.a;
+			switch (statusCategory.$) {
+				case 'EffortValue':
+					return $author$project$Pages$Test$validateEffortValue(val);
+				case 'BaseStats':
+					return $elm$core$Maybe$Just(val);
+				default:
+					return $author$project$Pages$Test$validateIndividualValue(val);
+			}
+		}
+	});
+var $author$project$Pages$Test$viewStatusInput = F5(
+	function (t, p, sc, v, toMsg) {
+		var _v0 = A2($author$project$Pages$Test$validateStatusInput, sc, v);
+		if (_v0.$ === 'Just') {
+			return A2(
+				$elm$html$Html$input,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$type_(t),
+						$elm$html$Html$Attributes$placeholder(p),
+						$elm$html$Html$Events$onInput(toMsg)
+					]),
+				_List_Nil);
+		} else {
+			return A2(
+				$elm$html$Html$input,
+				_List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'border-color', 'red'),
+						$elm$html$Html$Attributes$type_(t),
+						$elm$html$Html$Attributes$placeholder(p),
+						$elm$html$Html$Events$onInput(toMsg)
+					]),
+				_List_Nil);
+		}
+	});
 var $author$project$Pages$Test$viewRowInput = F2(
 	function (pc, model) {
+		var status = A2($author$project$Pages$Test$accessFieldStatus, pc, model.parameters);
 		return _List_fromArray(
 			[
-				A4(
-				$author$project$Pages$Test$viewInput,
+				A5(
+				$author$project$Pages$Test$viewStatusInput,
 				'text',
 				'種族値',
-				$elm$core$String$fromInt(model.attack.baseStats),
+				$author$project$Pages$Test$BaseStats,
+				status.baseStats.input,
 				A2($author$project$Pages$Test$ChangeValue, pc, $author$project$Pages$Test$BaseStats)),
-				A4(
-				$author$project$Pages$Test$viewInput,
+				A5(
+				$author$project$Pages$Test$viewStatusInput,
 				'text',
 				'個体値',
-				$elm$core$String$fromInt(model.attack.individualValue),
+				$author$project$Pages$Test$IndividualValue,
+				status.individualValue.input,
 				A2($author$project$Pages$Test$ChangeValue, pc, $author$project$Pages$Test$IndividualValue)),
-				A4(
-				$author$project$Pages$Test$viewInput,
+				A5(
+				$author$project$Pages$Test$viewStatusInput,
 				'text',
 				'努力値',
-				$elm$core$String$fromInt(model.attack.effortValue),
+				$author$project$Pages$Test$EffortValue,
+				status.effortValue.input,
 				A2($author$project$Pages$Test$ChangeValue, pc, $author$project$Pages$Test$EffortValue)),
 				$elm$html$Html$text(
 				$author$project$Pages$Test$resultView(
-					A2($author$project$Pages$Test$getParamFieldAccess, pc, model.parameters).realNumber))
+					A2($author$project$Pages$Test$accessFieldStatus, pc, model.parameters).realNumber)),
+				$elm$html$Html$text(model.content)
 			]);
 	});
 var $author$project$Pages$Test$view = function (model) {
