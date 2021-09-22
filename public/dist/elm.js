@@ -11186,19 +11186,28 @@ var $author$project$Pages$Test$Status = F4(
 	function (baseStats, effortValue, individualValue, realNumber) {
 		return {baseStats: baseStats, effortValue: effortValue, individualValue: individualValue, realNumber: realNumber};
 	});
+var $author$project$Pages$Test$Value = F2(
+	function (value, input) {
+		return {input: input, value: value};
+	});
+var $author$project$Pages$Test$initValue = function (val) {
+	return A2(
+		$author$project$Pages$Test$Value,
+		val,
+		$elm$core$String$fromInt(val));
+};
+var $author$project$Pages$Test$initStatus = A4(
+	$author$project$Pages$Test$Status,
+	$author$project$Pages$Test$initValue(0),
+	$author$project$Pages$Test$initValue(0),
+	$author$project$Pages$Test$initValue(31),
+	$elm$core$Maybe$Nothing);
 var $author$project$Pages$Test$init = _Utils_Tuple2(
 	{
-		attack: A4($author$project$Pages$Test$Status, 0, 0, 31, $elm$core$Maybe$Nothing),
+		attack: $author$project$Pages$Test$initStatus,
 		content: '',
 		level: 50,
-		parameters: {
-			attack: A4($author$project$Pages$Test$Status, 0, 0, 31, $elm$core$Maybe$Nothing),
-			defence: A4($author$project$Pages$Test$Status, 0, 0, 31, $elm$core$Maybe$Nothing),
-			hitPoint: A4($author$project$Pages$Test$Status, 0, 0, 31, $elm$core$Maybe$Nothing),
-			spAttack: A4($author$project$Pages$Test$Status, 0, 0, 31, $elm$core$Maybe$Nothing),
-			spDefence: A4($author$project$Pages$Test$Status, 0, 0, 31, $elm$core$Maybe$Nothing),
-			speed: A4($author$project$Pages$Test$Status, 0, 0, 31, $elm$core$Maybe$Nothing)
-		}
+		parameters: {attack: $author$project$Pages$Test$initStatus, defence: $author$project$Pages$Test$initStatus, hitPoint: $author$project$Pages$Test$initStatus, spAttack: $author$project$Pages$Test$initStatus, spDefence: $author$project$Pages$Test$initStatus, speed: $author$project$Pages$Test$initStatus}
 	},
 	$elm$core$Platform$Cmd$none);
 var $author$project$Pages$Test$subscriptions = function (model) {
@@ -11208,9 +11217,9 @@ var $author$project$Pages$Test$calculateStatus = F3(
 	function (level, paramCategory, status) {
 		var newValue = function () {
 			if (paramCategory.$ === 'HitPoint') {
-				return (((((((status.baseStats * 2) + status.individualValue) + ((status.effortValue / 4) | 0)) * level) / 100) | 0) + level) + 10;
+				return (((((((status.baseStats.value * 2) + status.individualValue.value) + ((status.effortValue.value / 4) | 0)) * level) / 100) | 0) + level) + 10;
 			} else {
-				return ((((((status.baseStats * 2) + status.individualValue) + ((status.effortValue / 4) | 0)) * level) / 100) | 0) + 5;
+				return ((((((status.baseStats.value * 2) + status.individualValue.value) + ((status.effortValue.value / 4) | 0)) * level) / 100) | 0) + 5;
 			}
 		}();
 		return _Utils_update(
@@ -11225,15 +11234,21 @@ var $author$project$Pages$Test$updateStatus = F3(
 			case 'BaseStats':
 				return _Utils_update(
 					status,
-					{baseStats: val});
+					{
+						baseStats: $author$project$Pages$Test$initValue(val)
+					});
 			case 'EffortValue':
 				return _Utils_update(
 					status,
-					{effortValue: val});
+					{
+						effortValue: $author$project$Pages$Test$initValue(val)
+					});
 			default:
 				return _Utils_update(
 					status,
-					{individualValue: val});
+					{
+						individualValue: $author$project$Pages$Test$initValue(val)
+					});
 		}
 	});
 var $author$project$Pages$Test$updateParams = F5(
@@ -11456,19 +11471,19 @@ var $author$project$Pages$Test$viewRowInput = F2(
 				$author$project$Pages$Test$viewInput,
 				'text',
 				'種族値',
-				$elm$core$String$fromInt(model.attack.baseStats),
+				$elm$core$String$fromInt(model.attack.baseStats.value),
 				A2($author$project$Pages$Test$ChangeValue, pc, $author$project$Pages$Test$BaseStats)),
 				A4(
 				$author$project$Pages$Test$viewInput,
 				'text',
 				'個体値',
-				$elm$core$String$fromInt(model.attack.individualValue),
+				$elm$core$String$fromInt(model.attack.individualValue.value),
 				A2($author$project$Pages$Test$ChangeValue, pc, $author$project$Pages$Test$IndividualValue)),
 				A4(
 				$author$project$Pages$Test$viewInput,
 				'text',
 				'努力値',
-				$elm$core$String$fromInt(model.attack.effortValue),
+				$elm$core$String$fromInt(model.attack.effortValue.value),
 				A2($author$project$Pages$Test$ChangeValue, pc, $author$project$Pages$Test$EffortValue)),
 				$elm$html$Html$text(
 				$author$project$Pages$Test$resultView(

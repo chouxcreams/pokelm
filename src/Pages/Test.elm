@@ -24,8 +24,12 @@ page shared req =
 -- INIT
 
 
+type alias Value =
+    { value : Int, input : String }
+
+
 type alias Status =
-    { baseStats : Int, effortValue : Int, individualValue : Int, realNumber : Maybe Int }
+    { baseStats : Value, effortValue : Value, individualValue : Value, realNumber : Maybe Int }
 
 
 type alias Parameters =
@@ -36,18 +40,28 @@ type alias Model =
     { content : String, level : Int, attack : Status, parameters : Parameters }
 
 
+initValue : Int -> Value
+initValue val =
+    Value val <| String.fromInt val
+
+
+initStatus : Status
+initStatus =
+    Status (initValue 0) (initValue 0) (initValue 31) Nothing
+
+
 init : ( Model, Cmd Msg )
 init =
     ( { content = ""
       , level = 50
-      , attack = Status 0 0 31 Nothing
+      , attack = initStatus
       , parameters =
-            { hitPoint = Status 0 0 31 Nothing
-            , attack = Status 0 0 31 Nothing
-            , defence = Status 0 0 31 Nothing
-            , spAttack = Status 0 0 31 Nothing
-            , spDefence = Status 0 0 31 Nothing
-            , speed = Status 0 0 31 Nothing
+            { hitPoint = initStatus
+            , attack = initStatus
+            , defence = initStatus
+            , spAttack = initStatus
+            , spDefence = initStatus
+            , speed = initStatus
             }
       }
     , Cmd.none
@@ -84,10 +98,10 @@ calculateStatus level paramCategory status =
         newValue =
             case paramCategory of
                 HitPoint ->
-                    (status.baseStats * 2 + status.individualValue + status.effortValue // 4) * level // 100 + level + 10
+                    (status.baseStats.value * 2 + status.individualValue.value + status.effortValue.value // 4) * level // 100 + level + 10
 
                 _ ->
-                    (status.baseStats * 2 + status.individualValue + status.effortValue // 4) * level // 100 + 5
+                    (status.baseStats.value * 2 + status.individualValue.value + status.effortValue.value // 4) * level // 100 + 5
     in
     { status | realNumber = Just newValue }
 
@@ -96,13 +110,13 @@ updateStatus : StatusCategory -> Int -> Status -> Status
 updateStatus category val status =
     case category of
         BaseStats ->
-            { status | baseStats = val }
+            { status | baseStats = initValue val }
 
         EffortValue ->
-            { status | effortValue = val }
+            { status | effortValue = initValue val }
 
         IndividualValue ->
-            { status | individualValue = val }
+            { status | individualValue = initValue val }
 
 
 getParamFieldAccess : ParamCategory -> (Parameters -> Status)
@@ -239,9 +253,9 @@ view model =
 
 viewRowInput : ParamCategory -> Model -> List (Html Msg)
 viewRowInput pc model =
-    [ viewInput "text" "種族値" (String.fromInt model.attack.baseStats) (ChangeValue pc BaseStats)
-    , viewInput "text" "個体値" (String.fromInt model.attack.individualValue) (ChangeValue pc IndividualValue)
-    , viewInput "text" "努力値" (String.fromInt model.attack.effortValue) (ChangeValue pc EffortValue)
+    [ viewInput "text" "種族値" (String.fromInt model.attack.baseStats.value) (ChangeValue pc BaseStats)
+    , viewInput "text" "個体値" (String.fromInt model.attack.individualValue.value) (ChangeValue pc IndividualValue)
+    , viewInput "text" "努力値" (String.fromInt model.attack.effortValue.value) (ChangeValue pc EffortValue)
     , text <| resultView <| .realNumber <| getParamFieldAccess pc <| model.parameters
     ]
 
