@@ -11393,6 +11393,7 @@ var $author$project$Pages$Test$Level = function (a) {
 var $author$project$Pages$Test$SpAttack = {$: 'SpAttack'};
 var $author$project$Pages$Test$SpDefence = {$: 'SpDefence'};
 var $author$project$Pages$Test$Speed = {$: 'Speed'};
+var $elm$html$Html$nav = _VirtualDom_node('nav');
 var $author$project$Pages$Test$isValid = function (string) {
 	var _v0 = $elm$core$String$toInt(string);
 	if (_v0.$ === 'Just') {
@@ -11410,7 +11411,8 @@ var $author$project$Pages$Test$viewInput = F4(
 				[
 					$elm$html$Html$Attributes$type_(t),
 					$elm$html$Html$Attributes$placeholder(p),
-					$elm$html$Html$Events$onInput(toMsg)
+					$elm$html$Html$Events$onInput(toMsg),
+					$elm$html$Html$Attributes$class('column input is-medium is-one-quarter')
 				]),
 			_List_Nil) : A2(
 			$elm$html$Html$input,
@@ -11419,7 +11421,8 @@ var $author$project$Pages$Test$viewInput = F4(
 					A2($elm$html$Html$Attributes$style, 'border-color', 'red'),
 					$elm$html$Html$Attributes$type_(t),
 					$elm$html$Html$Attributes$placeholder(p),
-					$elm$html$Html$Events$onInput(toMsg)
+					$elm$html$Html$Events$onInput(toMsg),
+					$elm$html$Html$Attributes$class('column input is-medium is-danger')
 				]),
 			_List_Nil);
 	});
@@ -11471,7 +11474,8 @@ var $author$project$Pages$Test$viewStatusInput = F5(
 					[
 						$elm$html$Html$Attributes$type_(t),
 						$elm$html$Html$Attributes$placeholder(p),
-						$elm$html$Html$Events$onInput(toMsg)
+						$elm$html$Html$Events$onInput(toMsg),
+						$elm$html$Html$Attributes$class('column input is-medium')
 					]),
 				_List_Nil);
 		} else {
@@ -11482,7 +11486,8 @@ var $author$project$Pages$Test$viewStatusInput = F5(
 						A2($elm$html$Html$Attributes$style, 'border-color', 'red'),
 						$elm$html$Html$Attributes$type_(t),
 						$elm$html$Html$Attributes$placeholder(p),
-						$elm$html$Html$Events$onInput(toMsg)
+						$elm$html$Html$Events$onInput(toMsg),
+						$elm$html$Html$Attributes$class('column input is-medium is-danger')
 					]),
 				_List_Nil);
 		}
@@ -11513,9 +11518,19 @@ var $author$project$Pages$Test$viewRowInput = F2(
 				$author$project$Pages$Test$EffortValue,
 				status.effortValue.input,
 				A2($author$project$Pages$Test$ChangeValue, pc, $author$project$Pages$Test$EffortValue)),
-				$elm$html$Html$text(
-				$author$project$Pages$Test$resultView(
-					A2($author$project$Pages$Test$accessFieldStatus, pc, model.parameters).realNumber)),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('column'),
+						A2($elm$html$Html$Attributes$style, 'font-size', '20px')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text(
+						$author$project$Pages$Test$resultView(
+							A2($author$project$Pages$Test$accessFieldStatus, pc, model.parameters).realNumber))
+					])),
 				$elm$html$Html$text(model.content)
 			]);
 	});
@@ -11524,36 +11539,88 @@ var $author$project$Pages$Test$view = function (model) {
 		body: _List_fromArray(
 			[
 				A2(
-				$elm$html$Html$div,
-				_List_Nil,
+				$elm$html$Html$nav,
 				_List_fromArray(
 					[
-						A4($author$project$Pages$Test$viewInput, 'text', 'level', model.content, $author$project$Pages$Test$Level)
+						$elm$html$Html$Attributes$class('navbar is-primary')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('navbar-brand'),
+								A2($elm$html$Html$Attributes$style, 'font-size', '35px'),
+								A2($elm$html$Html$Attributes$style, 'margin-left', '30px')
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Pokelm')
+							]))
 					])),
 				A2(
 				$elm$html$Html$div,
-				_List_Nil,
-				A2($author$project$Pages$Test$viewRowInput, $author$project$Pages$Test$HitPoint, model)),
-				A2(
-				$elm$html$Html$div,
-				_List_Nil,
-				A2($author$project$Pages$Test$viewRowInput, $author$project$Pages$Test$Attack, model)),
-				A2(
-				$elm$html$Html$div,
-				_List_Nil,
-				A2($author$project$Pages$Test$viewRowInput, $author$project$Pages$Test$Defence, model)),
-				A2(
-				$elm$html$Html$div,
-				_List_Nil,
-				A2($author$project$Pages$Test$viewRowInput, $author$project$Pages$Test$SpAttack, model)),
-				A2(
-				$elm$html$Html$div,
-				_List_Nil,
-				A2($author$project$Pages$Test$viewRowInput, $author$project$Pages$Test$SpDefence, model)),
-				A2(
-				$elm$html$Html$div,
-				_List_Nil,
-				A2($author$project$Pages$Test$viewRowInput, $author$project$Pages$Test$Speed, model))
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('container'),
+						A2($elm$html$Html$Attributes$style, 'margin-top', '20px')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('columns')
+							]),
+						_List_fromArray(
+							[
+								A4($author$project$Pages$Test$viewInput, 'text', 'level', model.content, $author$project$Pages$Test$Level)
+							])),
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('columns')
+							]),
+						A2($author$project$Pages$Test$viewRowInput, $author$project$Pages$Test$HitPoint, model)),
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('columns')
+							]),
+						A2($author$project$Pages$Test$viewRowInput, $author$project$Pages$Test$Attack, model)),
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('columns')
+							]),
+						A2($author$project$Pages$Test$viewRowInput, $author$project$Pages$Test$Defence, model)),
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('columns')
+							]),
+						A2($author$project$Pages$Test$viewRowInput, $author$project$Pages$Test$SpAttack, model)),
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('columns')
+							]),
+						A2($author$project$Pages$Test$viewRowInput, $author$project$Pages$Test$SpDefence, model)),
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('columns')
+							]),
+						A2($author$project$Pages$Test$viewRowInput, $author$project$Pages$Test$Speed, model))
+					]))
 			]),
 		title: 'pokelm'
 	};

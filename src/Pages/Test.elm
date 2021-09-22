@@ -1,7 +1,7 @@
 module Pages.Test exposing (Model, Msg, page)
 
 import Gen.Params.Test exposing (Params)
-import Html exposing (Html, div, input, text)
+import Html exposing (Html, div, input, nav, text)
 import Html.Attributes exposing (class, placeholder, style, type_, value)
 import Html.Events exposing (onInput)
 import Page
@@ -235,15 +235,23 @@ view : Model -> View Msg
 view model =
     { title = "pokelm"
     , body =
-        [ div []
-            [ viewInput "text" "level" model.content Level
+        [ nav [ class "navbar is-primary" ]
+            [ div
+                [ class "navbar-brand"
+                , style "font-size" "35px"
+                , style "margin-left" "30px"
+                ]
+                [ text "Pokelm" ]
             ]
-        , div [] <| viewRowInput HitPoint model
-        , div [] <| viewRowInput Attack model
-        , div [] <| viewRowInput Defence model
-        , div [] <| viewRowInput SpAttack model
-        , div [] <| viewRowInput SpDefence model
-        , div [] <| viewRowInput Speed model
+        , div [ class "container", style "margin-top" "20px" ]
+            [ div [ class "columns" ] [ viewInput "text" "level" model.content Level ]
+            , div [ class "columns" ] <| viewRowInput HitPoint model
+            , div [ class "columns" ] <| viewRowInput Attack model
+            , div [ class "columns" ] <| viewRowInput Defence model
+            , div [ class "columns" ] <| viewRowInput SpAttack model
+            , div [ class "columns" ] <| viewRowInput SpDefence model
+            , div [ class "columns" ] <| viewRowInput Speed model
+            ]
         ]
     }
 
@@ -257,7 +265,7 @@ viewRowInput pc model =
     [ viewStatusInput "text" "種族値" BaseStats status.baseStats.input (ChangeValue pc BaseStats)
     , viewStatusInput "text" "個体値" IndividualValue status.individualValue.input (ChangeValue pc IndividualValue)
     , viewStatusInput "text" "努力値" EffortValue status.effortValue.input (ChangeValue pc EffortValue)
-    , text <| resultView <| .realNumber <| accessFieldStatus pc <| model.parameters
+    , div [ class "column", style "font-size" "20px" ] [ text <| resultView <| .realNumber <| accessFieldStatus pc <| model.parameters ]
     , text model.content
     ]
 
@@ -265,20 +273,20 @@ viewRowInput pc model =
 viewInput : String -> String -> String -> (String -> msg) -> Html msg
 viewInput t p v toMsg =
     if isValid v then
-        input [ type_ t, placeholder p, onInput toMsg ] []
+        input [ type_ t, placeholder p, onInput toMsg, class "column input is-medium is-one-quarter" ] []
 
     else
-        input [ style "border-color" "red", type_ t, placeholder p, onInput toMsg ] []
+        input [ style "border-color" "red", type_ t, placeholder p, onInput toMsg, class "column input is-medium is-danger" ] []
 
 
 viewStatusInput : String -> String -> StatusCategory -> String -> (String -> msg) -> Html msg
 viewStatusInput t p sc v toMsg =
     case validateStatusInput sc v of
         Just _ ->
-            input [ type_ t, placeholder p, onInput toMsg ] []
+            input [ type_ t, placeholder p, onInput toMsg, class "column input is-medium" ] []
 
         Nothing ->
-            input [ style "border-color" "red", type_ t, placeholder p, onInput toMsg ] []
+            input [ style "border-color" "red", type_ t, placeholder p, onInput toMsg, class "column input is-medium is-danger" ] []
 
 
 resultView : Maybe Int -> String
