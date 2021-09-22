@@ -250,10 +250,15 @@ view model =
 
 viewRowInput : ParamCategory -> Model -> List (Html Msg)
 viewRowInput pc model =
-    [ viewInput "text" "種族値" (String.fromInt model.attack.baseStats.value) (ChangeValue pc BaseStats)
-    , viewInput "text" "個体値" (String.fromInt model.attack.individualValue.value) (ChangeValue pc IndividualValue)
-    , viewInput "text" "努力値" (String.fromInt model.attack.effortValue.value) (ChangeValue pc EffortValue)
+    let
+        status =
+            model.parameters |> accessFieldStatus pc
+    in
+    [ viewStatusInput "text" "種族値" BaseStats status.baseStats.input (ChangeValue pc BaseStats)
+    , viewStatusInput "text" "個体値" IndividualValue status.individualValue.input (ChangeValue pc IndividualValue)
+    , viewStatusInput "text" "努力値" EffortValue status.effortValue.input (ChangeValue pc EffortValue)
     , text <| resultView <| .realNumber <| accessFieldStatus pc <| model.parameters
+    , text model.content
     ]
 
 
@@ -264,6 +269,16 @@ viewInput t p v toMsg =
 
     else
         input [ style "border-color" "red", type_ t, placeholder p, onInput toMsg ] []
+
+
+viewStatusInput : String -> String -> StatusCategory -> String -> (String -> msg) -> Html msg
+viewStatusInput t p sc v toMsg =
+    case validateStatusInput sc v of
+        Just _ ->
+            input [ type_ t, placeholder p, onInput toMsg ] []
+
+        Nothing ->
+            input [ style "border-color" "red", type_ t, placeholder p, onInput toMsg ] []
 
 
 resultView : Maybe Int -> String
@@ -304,8 +319,8 @@ validateLevel input =
                 Nothing
 
 
-validateStatusValue : StatusCategory -> String -> Maybe Int
-validateStatusValue statusCategory input =
+validateStatusInput : StatusCategory -> String -> Maybe Int
+validateStatusInput statusCategory input =
     case String.toInt input of
         Nothing ->
             Nothing

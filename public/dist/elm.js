@@ -11438,31 +11438,85 @@ var $author$project$Pages$Test$resultView = function (maybeInt) {
 		return $elm$core$String$fromInt(val);
 	}
 };
+var $author$project$Pages$Test$validateEffortValue = function (ev) {
+	return ((ev <= 252) && (ev >= 0)) ? $elm$core$Maybe$Just(ev) : $elm$core$Maybe$Nothing;
+};
+var $author$project$Pages$Test$validateIndividualValue = function (iv) {
+	return ((iv <= 31) && (iv >= 0)) ? $elm$core$Maybe$Just(iv) : $elm$core$Maybe$Nothing;
+};
+var $author$project$Pages$Test$validateStatusInput = F2(
+	function (statusCategory, input) {
+		var _v0 = $elm$core$String$toInt(input);
+		if (_v0.$ === 'Nothing') {
+			return $elm$core$Maybe$Nothing;
+		} else {
+			var val = _v0.a;
+			switch (statusCategory.$) {
+				case 'EffortValue':
+					return $author$project$Pages$Test$validateEffortValue(val);
+				case 'BaseStats':
+					return $elm$core$Maybe$Just(val);
+				default:
+					return $author$project$Pages$Test$validateIndividualValue(val);
+			}
+		}
+	});
+var $author$project$Pages$Test$viewStatusInput = F5(
+	function (t, p, sc, v, toMsg) {
+		var _v0 = A2($author$project$Pages$Test$validateStatusInput, sc, v);
+		if (_v0.$ === 'Just') {
+			return A2(
+				$elm$html$Html$input,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$type_(t),
+						$elm$html$Html$Attributes$placeholder(p),
+						$elm$html$Html$Events$onInput(toMsg)
+					]),
+				_List_Nil);
+		} else {
+			return A2(
+				$elm$html$Html$input,
+				_List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'border-color', 'red'),
+						$elm$html$Html$Attributes$type_(t),
+						$elm$html$Html$Attributes$placeholder(p),
+						$elm$html$Html$Events$onInput(toMsg)
+					]),
+				_List_Nil);
+		}
+	});
 var $author$project$Pages$Test$viewRowInput = F2(
 	function (pc, model) {
+		var status = A2($author$project$Pages$Test$accessFieldStatus, pc, model.parameters);
 		return _List_fromArray(
 			[
-				A4(
-				$author$project$Pages$Test$viewInput,
+				A5(
+				$author$project$Pages$Test$viewStatusInput,
 				'text',
 				'種族値',
-				$elm$core$String$fromInt(model.attack.baseStats.value),
+				$author$project$Pages$Test$BaseStats,
+				status.baseStats.input,
 				A2($author$project$Pages$Test$ChangeValue, pc, $author$project$Pages$Test$BaseStats)),
-				A4(
-				$author$project$Pages$Test$viewInput,
+				A5(
+				$author$project$Pages$Test$viewStatusInput,
 				'text',
 				'個体値',
-				$elm$core$String$fromInt(model.attack.individualValue.value),
+				$author$project$Pages$Test$IndividualValue,
+				status.individualValue.input,
 				A2($author$project$Pages$Test$ChangeValue, pc, $author$project$Pages$Test$IndividualValue)),
-				A4(
-				$author$project$Pages$Test$viewInput,
+				A5(
+				$author$project$Pages$Test$viewStatusInput,
 				'text',
 				'努力値',
-				$elm$core$String$fromInt(model.attack.effortValue.value),
+				$author$project$Pages$Test$EffortValue,
+				status.effortValue.input,
 				A2($author$project$Pages$Test$ChangeValue, pc, $author$project$Pages$Test$EffortValue)),
 				$elm$html$Html$text(
 				$author$project$Pages$Test$resultView(
-					A2($author$project$Pages$Test$accessFieldStatus, pc, model.parameters).realNumber))
+					A2($author$project$Pages$Test$accessFieldStatus, pc, model.parameters).realNumber)),
+				$elm$html$Html$text(model.content)
 			]);
 	});
 var $author$project$Pages$Test$view = function (model) {
