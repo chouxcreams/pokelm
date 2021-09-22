@@ -106,21 +106,44 @@ calculateStatus level paramCategory status =
     { status | realNumber = Just newValue }
 
 
-updateStatus : StatusCategory -> Int -> Status -> Status
-updateStatus category val status =
+updateValue : String -> Value -> Value
+updateValue input value =
+    case String.toInt input of
+        Just num ->
+            Value num input
+
+        Nothing ->
+            { value | input = input }
+
+
+updateStatus : StatusCategory -> Status -> Value -> Status
+updateStatus category status value =
     case category of
         BaseStats ->
-            { status | baseStats = initValue val }
+            { status | baseStats = value }
 
         EffortValue ->
-            { status | effortValue = initValue val }
+            { status | effortValue = value }
 
         IndividualValue ->
-            { status | individualValue = initValue val }
+            { status | individualValue = value }
 
 
-getParamFieldAccess : ParamCategory -> (Parameters -> Status)
-getParamFieldAccess pc =
+accessFieldValue : StatusCategory -> (Status -> Value)
+accessFieldValue sc =
+    case sc of
+        BaseStats ->
+            .baseStats
+
+        EffortValue ->
+            .effortValue
+
+        IndividualValue ->
+            .individualValue
+
+
+accessFieldStatus : ParamCategory -> (Parameters -> Status)
+accessFieldStatus pc =
     case pc of
         HitPoint ->
             .hitPoint
@@ -141,56 +164,26 @@ getParamFieldAccess pc =
             .speed
 
 
-updateParams : ParamCategory -> StatusCategory -> Int -> Int -> Parameters -> Parameters
-updateParams paramCategory statusCategory val level params =
-    case paramCategory of
+updateParam : ParamCategory -> Parameters -> Status -> Parameters
+updateParam pc params status =
+    case pc of
         HitPoint ->
-            { params
-                | hitPoint =
-                    params.hitPoint
-                        |> updateStatus statusCategory val
-                        |> calculateStatus level paramCategory
-            }
+            { params | hitPoint = status }
 
         Attack ->
-            { params
-                | attack =
-                    params.attack
-                        |> updateStatus statusCategory val
-                        |> calculateStatus level paramCategory
-            }
+            { params | attack = status }
 
         Defence ->
-            { params
-                | defence =
-                    params.defence
-                        |> updateStatus statusCategory val
-                        |> calculateStatus level paramCategory
-            }
+            { params | defence = status }
 
         SpAttack ->
-            { params
-                | spAttack =
-                    params.spAttack
-                        |> updateStatus statusCategory val
-                        |> calculateStatus level paramCategory
-            }
+            { params | spAttack = status }
 
         SpDefence ->
-            { params
-                | spDefence =
-                    params.spDefence
-                        |> updateStatus statusCategory val
-                        |> calculateStatus level paramCategory
-            }
+            { params | spDefence = status }
 
         Speed ->
-            { params
-                | speed =
-                    params.speed
-                        |> updateStatus statusCategory val
-                        |> calculateStatus level paramCategory
-            }
+            { params | speed = status }
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -206,17 +199,21 @@ update msg model =
                         Just newLevel ->
                             { model | level = newLevel }
 
-                ChangeValue paramCategory statusCategory input ->
-                    case validateStatusValue statusCategory input of
-                        Nothing ->
-                            model
-
-                        Just val ->
-                            { model
-                                | parameters =
+                ChangeValue pc sc input ->
+                    { model
+                        | parameters =
+                            let
+                                statusToUpdate =
                                     model.parameters
-                                        |> updateParams paramCategory statusCategory val model.level
-                            }
+                                        |> accessFieldStatus pc
+                            in
+                            statusToUpdate
+                                |> accessFieldValue sc
+                                |> updateValue input
+                                |> updateStatus sc statusToUpdate
+                                |> calculateStatus model.level pc
+                                |> updateParam pc model.parameters
+                    }
     in
     ( newModel, Cmd.none )
 
@@ -256,7 +253,7 @@ viewRowInput pc model =
     [ viewInput "text" "種族値" (String.fromInt model.attack.baseStats.value) (ChangeValue pc BaseStats)
     , viewInput "text" "個体値" (String.fromInt model.attack.individualValue.value) (ChangeValue pc IndividualValue)
     , viewInput "text" "努力値" (String.fromInt model.attack.effortValue.value) (ChangeValue pc EffortValue)
-    , text <| resultView <| .realNumber <| getParamFieldAccess pc <| model.parameters
+    , text <| resultView <| .realNumber <| accessFieldStatus pc <| model.parameters
     ]
 
 
