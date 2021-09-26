@@ -1,8 +1,8 @@
 module Pages.Test exposing (Model, Msg, page)
 
 import Gen.Params.Test exposing (Params)
-import Html exposing (Html, div, input, nav, span, text)
-import Html.Attributes exposing (class, placeholder, style, type_, value)
+import Html exposing (Attribute, Html, div, input, nav, span, text)
+import Html.Attributes exposing (class, placeholder, step, style, type_, value)
 import Html.Events exposing (onInput)
 import Page
 import Request
@@ -262,9 +262,9 @@ viewRowInput pc model =
         status =
             model.parameters |> accessFieldStatus pc
     in
-    [ viewStatusInput "種族値" BaseStats status.baseStats.input (ChangeValue pc BaseStats)
-    , viewStatusInput "個体値" IndividualValue status.individualValue.input (ChangeValue pc IndividualValue)
-    , viewStatusInput "努力値" EffortValue status.effortValue.input (ChangeValue pc EffortValue)
+    [ input [ type_ "number", placeholder "種族値", viewStatusClass BaseStats status.baseStats.input, onInput (ChangeValue pc BaseStats) ] []
+    , input [ type_ "number", placeholder "個体値", viewStatusClass IndividualValue status.individualValue.input, onInput (ChangeValue pc IndividualValue) ] []
+    , input [ type_ "number", placeholder "努力値", viewStatusClass EffortValue status.effortValue.input, onInput (ChangeValue pc EffortValue), step "4" ] []
     , div [ class "column", style "font-size" "20px" ] [ text <| resultView <| .realNumber <| accessFieldStatus pc <| model.parameters ]
     , text model.content
     ]
@@ -279,14 +279,14 @@ viewInput t p v toMsg =
         input [ style "border-color" "red", type_ t, placeholder p, onInput toMsg, class "column input is-medium is-danger" ] []
 
 
-viewStatusInput : String -> StatusCategory -> String -> (String -> msg) -> Html msg
-viewStatusInput p sc v toMsg =
+viewStatusClass : StatusCategory -> String -> Attribute msg
+viewStatusClass sc v =
     case validateStatusInput sc v of
         Just _ ->
-            input [ type_ "number", placeholder p, onInput toMsg, class "column input is-medium" ] []
+            class "column input is-medium"
 
         Nothing ->
-            input [ type_ "number", placeholder p, onInput toMsg, class "column input is-medium is-danger" ] []
+            class "column input is-medium is-danger"
 
 
 resultView : Maybe Int -> String

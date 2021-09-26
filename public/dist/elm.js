@@ -11441,6 +11441,9 @@ var $author$project$Pages$Test$resultView = function (maybeInt) {
 		return $elm$core$String$fromInt(val);
 	}
 };
+var $elm$html$Html$Attributes$step = function (n) {
+	return A2($elm$html$Html$Attributes$stringProperty, 'step', n);
+};
 var $author$project$Pages$Test$validateEffortValue = function (ev) {
 	return ((ev <= 252) && (ev >= 0)) ? $elm$core$Maybe$Just(ev) : $elm$core$Maybe$Nothing;
 };
@@ -11464,31 +11467,13 @@ var $author$project$Pages$Test$validateStatusInput = F2(
 			}
 		}
 	});
-var $author$project$Pages$Test$viewStatusInput = F4(
-	function (p, sc, v, toMsg) {
+var $author$project$Pages$Test$viewStatusClass = F2(
+	function (sc, v) {
 		var _v0 = A2($author$project$Pages$Test$validateStatusInput, sc, v);
 		if (_v0.$ === 'Just') {
-			return A2(
-				$elm$html$Html$input,
-				_List_fromArray(
-					[
-						$elm$html$Html$Attributes$type_('number'),
-						$elm$html$Html$Attributes$placeholder(p),
-						$elm$html$Html$Events$onInput(toMsg),
-						$elm$html$Html$Attributes$class('column input is-medium')
-					]),
-				_List_Nil);
+			return $elm$html$Html$Attributes$class('column input is-medium');
 		} else {
-			return A2(
-				$elm$html$Html$input,
-				_List_fromArray(
-					[
-						$elm$html$Html$Attributes$type_('number'),
-						$elm$html$Html$Attributes$placeholder(p),
-						$elm$html$Html$Events$onInput(toMsg),
-						$elm$html$Html$Attributes$class('column input is-medium is-danger')
-					]),
-				_List_Nil);
+			return $elm$html$Html$Attributes$class('column input is-medium is-danger');
 		}
 	});
 var $author$project$Pages$Test$viewRowInput = F2(
@@ -11496,24 +11481,40 @@ var $author$project$Pages$Test$viewRowInput = F2(
 		var status = A2($author$project$Pages$Test$accessFieldStatus, pc, model.parameters);
 		return _List_fromArray(
 			[
-				A4(
-				$author$project$Pages$Test$viewStatusInput,
-				'種族値',
-				$author$project$Pages$Test$BaseStats,
-				status.baseStats.input,
-				A2($author$project$Pages$Test$ChangeValue, pc, $author$project$Pages$Test$BaseStats)),
-				A4(
-				$author$project$Pages$Test$viewStatusInput,
-				'個体値',
-				$author$project$Pages$Test$IndividualValue,
-				status.individualValue.input,
-				A2($author$project$Pages$Test$ChangeValue, pc, $author$project$Pages$Test$IndividualValue)),
-				A4(
-				$author$project$Pages$Test$viewStatusInput,
-				'努力値',
-				$author$project$Pages$Test$EffortValue,
-				status.effortValue.input,
-				A2($author$project$Pages$Test$ChangeValue, pc, $author$project$Pages$Test$EffortValue)),
+				A2(
+				$elm$html$Html$input,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$type_('number'),
+						$elm$html$Html$Attributes$placeholder('種族値'),
+						A2($author$project$Pages$Test$viewStatusClass, $author$project$Pages$Test$BaseStats, status.baseStats.input),
+						$elm$html$Html$Events$onInput(
+						A2($author$project$Pages$Test$ChangeValue, pc, $author$project$Pages$Test$BaseStats))
+					]),
+				_List_Nil),
+				A2(
+				$elm$html$Html$input,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$type_('number'),
+						$elm$html$Html$Attributes$placeholder('個体値'),
+						A2($author$project$Pages$Test$viewStatusClass, $author$project$Pages$Test$IndividualValue, status.individualValue.input),
+						$elm$html$Html$Events$onInput(
+						A2($author$project$Pages$Test$ChangeValue, pc, $author$project$Pages$Test$IndividualValue))
+					]),
+				_List_Nil),
+				A2(
+				$elm$html$Html$input,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$type_('number'),
+						$elm$html$Html$Attributes$placeholder('努力値'),
+						A2($author$project$Pages$Test$viewStatusClass, $author$project$Pages$Test$EffortValue, status.effortValue.input),
+						$elm$html$Html$Events$onInput(
+						A2($author$project$Pages$Test$ChangeValue, pc, $author$project$Pages$Test$EffortValue)),
+						$elm$html$Html$Attributes$step('4')
+					]),
+				_List_Nil),
 				A2(
 				$elm$html$Html$div,
 				_List_fromArray(
