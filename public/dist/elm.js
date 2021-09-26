@@ -11464,15 +11464,15 @@ var $author$project$Pages$Test$validateStatusInput = F2(
 			}
 		}
 	});
-var $author$project$Pages$Test$viewStatusInput = F5(
-	function (t, p, sc, v, toMsg) {
+var $author$project$Pages$Test$viewStatusInput = F4(
+	function (p, sc, v, toMsg) {
 		var _v0 = A2($author$project$Pages$Test$validateStatusInput, sc, v);
 		if (_v0.$ === 'Just') {
 			return A2(
 				$elm$html$Html$input,
 				_List_fromArray(
 					[
-						$elm$html$Html$Attributes$type_(t),
+						$elm$html$Html$Attributes$type_('number'),
 						$elm$html$Html$Attributes$placeholder(p),
 						$elm$html$Html$Events$onInput(toMsg),
 						$elm$html$Html$Attributes$class('column input is-medium')
@@ -11483,8 +11483,7 @@ var $author$project$Pages$Test$viewStatusInput = F5(
 				$elm$html$Html$input,
 				_List_fromArray(
 					[
-						A2($elm$html$Html$Attributes$style, 'border-color', 'red'),
-						$elm$html$Html$Attributes$type_(t),
+						$elm$html$Html$Attributes$type_('number'),
 						$elm$html$Html$Attributes$placeholder(p),
 						$elm$html$Html$Events$onInput(toMsg),
 						$elm$html$Html$Attributes$class('column input is-medium is-danger')
@@ -11497,23 +11496,20 @@ var $author$project$Pages$Test$viewRowInput = F2(
 		var status = A2($author$project$Pages$Test$accessFieldStatus, pc, model.parameters);
 		return _List_fromArray(
 			[
-				A5(
+				A4(
 				$author$project$Pages$Test$viewStatusInput,
-				'number',
 				'種族値',
 				$author$project$Pages$Test$BaseStats,
 				status.baseStats.input,
 				A2($author$project$Pages$Test$ChangeValue, pc, $author$project$Pages$Test$BaseStats)),
-				A5(
+				A4(
 				$author$project$Pages$Test$viewStatusInput,
-				'number',
 				'個体値',
 				$author$project$Pages$Test$IndividualValue,
 				status.individualValue.input,
 				A2($author$project$Pages$Test$ChangeValue, pc, $author$project$Pages$Test$IndividualValue)),
-				A5(
+				A4(
 				$author$project$Pages$Test$viewStatusInput,
-				'number',
 				'努力値',
 				$author$project$Pages$Test$EffortValue,
 				status.effortValue.input,

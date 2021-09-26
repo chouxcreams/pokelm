@@ -262,9 +262,9 @@ viewRowInput pc model =
         status =
             model.parameters |> accessFieldStatus pc
     in
-    [ viewStatusInput "number" "種族値" BaseStats status.baseStats.input (ChangeValue pc BaseStats)
-    , viewStatusInput "number" "個体値" IndividualValue status.individualValue.input (ChangeValue pc IndividualValue)
-    , viewStatusInput "number" "努力値" EffortValue status.effortValue.input (ChangeValue pc EffortValue)
+    [ viewStatusInput "種族値" BaseStats status.baseStats.input (ChangeValue pc BaseStats)
+    , viewStatusInput "個体値" IndividualValue status.individualValue.input (ChangeValue pc IndividualValue)
+    , viewStatusInput "努力値" EffortValue status.effortValue.input (ChangeValue pc EffortValue)
     , div [ class "column", style "font-size" "20px" ] [ text <| resultView <| .realNumber <| accessFieldStatus pc <| model.parameters ]
     , text model.content
     ]
@@ -279,14 +279,14 @@ viewInput t p v toMsg =
         input [ style "border-color" "red", type_ t, placeholder p, onInput toMsg, class "column input is-medium is-danger" ] []
 
 
-viewStatusInput : String -> String -> StatusCategory -> String -> (String -> msg) -> Html msg
-viewStatusInput t p sc v toMsg =
+viewStatusInput : String -> StatusCategory -> String -> (String -> msg) -> Html msg
+viewStatusInput p sc v toMsg =
     case validateStatusInput sc v of
         Just _ ->
-            input [ type_ t, placeholder p, onInput toMsg, class "column input is-medium" ] []
+            input [ type_ "number", placeholder p, onInput toMsg, class "column input is-medium" ] []
 
         Nothing ->
-            input [ style "border-color" "red", type_ t, placeholder p, onInput toMsg, class "column input is-medium is-danger" ] []
+            input [ type_ "number", placeholder p, onInput toMsg, class "column input is-medium is-danger" ] []
 
 
 resultView : Maybe Int -> String
