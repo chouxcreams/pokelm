@@ -11499,21 +11499,21 @@ var $author$project$Pages$Test$viewRowInput = F2(
 			[
 				A5(
 				$author$project$Pages$Test$viewStatusInput,
-				'text',
+				'number',
 				'種族値',
 				$author$project$Pages$Test$BaseStats,
 				status.baseStats.input,
 				A2($author$project$Pages$Test$ChangeValue, pc, $author$project$Pages$Test$BaseStats)),
 				A5(
 				$author$project$Pages$Test$viewStatusInput,
-				'text',
+				'number',
 				'個体値',
 				$author$project$Pages$Test$IndividualValue,
 				status.individualValue.input,
 				A2($author$project$Pages$Test$ChangeValue, pc, $author$project$Pages$Test$IndividualValue)),
 				A5(
 				$author$project$Pages$Test$viewStatusInput,
-				'text',
+				'number',
 				'努力値',
 				$author$project$Pages$Test$EffortValue,
 				status.effortValue.input,
@@ -11576,7 +11576,7 @@ var $author$project$Pages$Test$view = function (model) {
 							]),
 						_List_fromArray(
 							[
-								A4($author$project$Pages$Test$viewInput, 'text', 'level', model.content, $author$project$Pages$Test$Level)
+								A4($author$project$Pages$Test$viewInput, 'number', 'level', model.content, $author$project$Pages$Test$Level)
 							])),
 						A2(
 						$elm$html$Html$div,

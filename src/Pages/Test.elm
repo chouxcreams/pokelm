@@ -1,7 +1,7 @@
 module Pages.Test exposing (Model, Msg, page)
 
 import Gen.Params.Test exposing (Params)
-import Html exposing (Html, div, input, nav, text)
+import Html exposing (Html, div, input, nav, span, text)
 import Html.Attributes exposing (class, placeholder, style, type_, value)
 import Html.Events exposing (onInput)
 import Page
@@ -244,7 +244,7 @@ view model =
                 [ text "Pokelm" ]
             ]
         , div [ class "container", style "margin-top" "20px" ]
-            [ div [ class "columns" ] [ viewInput "text" "level" model.content Level ]
+            [ div [ class "columns" ] [ viewInput "number" "level" model.content Level ]
             , div [ class "columns" ] <| viewRowInput HitPoint model
             , div [ class "columns" ] <| viewRowInput Attack model
             , div [ class "columns" ] <| viewRowInput Defence model
@@ -262,9 +262,9 @@ viewRowInput pc model =
         status =
             model.parameters |> accessFieldStatus pc
     in
-    [ viewStatusInput "text" "種族値" BaseStats status.baseStats.input (ChangeValue pc BaseStats)
-    , viewStatusInput "text" "個体値" IndividualValue status.individualValue.input (ChangeValue pc IndividualValue)
-    , viewStatusInput "text" "努力値" EffortValue status.effortValue.input (ChangeValue pc EffortValue)
+    [ viewStatusInput "number" "種族値" BaseStats status.baseStats.input (ChangeValue pc BaseStats)
+    , viewStatusInput "number" "個体値" IndividualValue status.individualValue.input (ChangeValue pc IndividualValue)
+    , viewStatusInput "number" "努力値" EffortValue status.effortValue.input (ChangeValue pc EffortValue)
     , div [ class "column", style "font-size" "20px" ] [ text <| resultView <| .realNumber <| accessFieldStatus pc <| model.parameters ]
     , text model.content
     ]
