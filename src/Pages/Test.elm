@@ -36,8 +36,16 @@ type alias Parameters =
     { hitPoint : Status, attack : Status, defence : Status, spAttack : Status, spDefence : Status, speed : Status }
 
 
+type alias Nature =
+    { code : NatureCategory
+    , label : String
+    , up : Maybe StatusCategory
+    , down : Maybe StatusCategory
+    }
+
+
 type alias Model =
-    { content : String, level : Int, attack : Status, parameters : Parameters }
+    { content : String, level : Int, nature : Nature, attack : Status, parameters : Parameters }
 
 
 initValue : Int -> Value
@@ -54,6 +62,7 @@ init : ( Model, Cmd Msg )
 init =
     ( { content = ""
       , level = 50
+      , nature = Nature Serious "まじめ" Nothing Nothing
       , attack = initStatus
       , parameters =
             { hitPoint = initStatus
@@ -85,6 +94,34 @@ type ParamCategory
     | SpAttack
     | SpDefence
     | Speed
+
+
+type NatureCategory
+    = Adamant
+    | Bashful
+    | Brave
+    | Bold
+    | Calm
+    | Careful
+    | Docile
+    | Gentle
+    | Hardy
+    | Hasty
+    | Impish
+    | Jolly
+    | Lax
+    | Lonely
+    | Mild
+    | Modest
+    | Naive
+    | Naughty
+    | Quiet
+    | Quirky
+    | Rash
+    | Relaxed
+    | Sassy
+    | Serious
+    | Timid
 
 
 type Msg
