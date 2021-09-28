@@ -11182,6 +11182,11 @@ var $ryannhg$elm_spa$ElmSpa$Page$element = F2(
 				}));
 	});
 var $author$project$Page$element = $ryannhg$elm_spa$ElmSpa$Page$element($author$project$Effect$fromCmd);
+var $author$project$Pages$Test$Nature = F4(
+	function (code, label, up, down) {
+		return {code: code, down: down, label: label, up: up};
+	});
+var $author$project$Pages$Test$Serious = {$: 'Serious'};
 var $author$project$Pages$Test$Status = F4(
 	function (baseStats, effortValue, individualValue, realNumber) {
 		return {baseStats: baseStats, effortValue: effortValue, individualValue: individualValue, realNumber: realNumber};
@@ -11207,6 +11212,7 @@ var $author$project$Pages$Test$init = _Utils_Tuple2(
 		attack: $author$project$Pages$Test$initStatus,
 		content: '',
 		level: 50,
+		nature: A4($author$project$Pages$Test$Nature, $author$project$Pages$Test$Serious, 'まじめ', $elm$core$Maybe$Nothing, $elm$core$Maybe$Nothing),
 		parameters: {attack: $author$project$Pages$Test$initStatus, defence: $author$project$Pages$Test$initStatus, hitPoint: $author$project$Pages$Test$initStatus, spAttack: $author$project$Pages$Test$initStatus, spDefence: $author$project$Pages$Test$initStatus, speed: $author$project$Pages$Test$initStatus}
 	},
 	$elm$core$Platform$Cmd$none);
@@ -11557,6 +11563,35 @@ var $author$project$Pages$Test$viewRowInput = F2(
 									$elm$html$Html$Attributes$step('4')
 								]),
 							_List_Nil),
+							A2(
+							$elm$html$Html$div,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$class('column')
+								]),
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$button,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$class('button')
+										]),
+									_List_fromArray(
+										[
+											$elm$html$Html$text('↑')
+										])),
+									A2(
+									$elm$html$Html$button,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$class('button')
+										]),
+									_List_fromArray(
+										[
+											$elm$html$Html$text('↓')
+										]))
+								])),
 							A2(
 							$elm$html$Html$div,
 							_List_fromArray(

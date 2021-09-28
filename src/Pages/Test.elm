@@ -1,7 +1,7 @@
 module Pages.Test exposing (Model, Msg, page)
 
 import Gen.Params.Test exposing (Params)
-import Html exposing (Attribute, Html, div, h2, input, nav, span, text)
+import Html exposing (Attribute, Html, button, div, h2, input, nav, span, text)
 import Html.Attributes exposing (class, placeholder, step, style, type_, value)
 import Html.Events exposing (onInput)
 import Page
@@ -305,6 +305,7 @@ viewRowInput pc model =
             [ input [ type_ "number", placeholder "種族値", viewStatusClass BaseStats status.baseStats.input, onInput (ChangeValue pc BaseStats) ] []
             , input [ type_ "number", placeholder "個体値", viewStatusClass IndividualValue status.individualValue.input, onInput (ChangeValue pc IndividualValue) ] []
             , input [ type_ "number", placeholder "努力値", viewStatusClass EffortValue status.effortValue.input, onInput (ChangeValue pc EffortValue), step "4" ] []
+            , div [ class "column" ] [ button [ class "button" ] [ text "↑" ], button [ class "button" ] [ text "↓" ] ]
             , div [ class "column", style "font-size" "20px" ] [ text <| resultView <| .realNumber <| accessFieldStatus pc <| model.parameters ]
             ]
         ]
