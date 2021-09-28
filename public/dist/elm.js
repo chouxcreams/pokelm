@@ -11433,6 +11433,22 @@ var $author$project$Pages$Test$ChangeValue = F3(
 	});
 var $author$project$Pages$Test$EffortValue = {$: 'EffortValue'};
 var $author$project$Pages$Test$IndividualValue = {$: 'IndividualValue'};
+var $author$project$Pages$Test$describeParam = function (pc) {
+	switch (pc.$) {
+		case 'HitPoint':
+			return 'HP';
+		case 'Attack':
+			return 'こうげき';
+		case 'Defence':
+			return 'ぼうぎょ';
+		case 'SpAttack':
+			return 'とくこう';
+		case 'SpDefence':
+			return 'とくぼう';
+		default:
+			return 'すばやさ';
+	}
+};
 var $author$project$Pages$Test$resultView = function (maybeInt) {
 	if (maybeInt.$ === 'Nothing') {
 		return '';
@@ -11479,57 +11495,83 @@ var $author$project$Pages$Test$viewStatusClass = F2(
 var $author$project$Pages$Test$viewRowInput = F2(
 	function (pc, model) {
 		var status = A2($author$project$Pages$Test$accessFieldStatus, pc, model.parameters);
-		return _List_fromArray(
-			[
-				A2(
-				$elm$html$Html$input,
-				_List_fromArray(
-					[
-						$elm$html$Html$Attributes$type_('number'),
-						$elm$html$Html$Attributes$placeholder('種族値'),
-						A2($author$project$Pages$Test$viewStatusClass, $author$project$Pages$Test$BaseStats, status.baseStats.input),
-						$elm$html$Html$Events$onInput(
-						A2($author$project$Pages$Test$ChangeValue, pc, $author$project$Pages$Test$BaseStats))
-					]),
-				_List_Nil),
-				A2(
-				$elm$html$Html$input,
-				_List_fromArray(
-					[
-						$elm$html$Html$Attributes$type_('number'),
-						$elm$html$Html$Attributes$placeholder('個体値'),
-						A2($author$project$Pages$Test$viewStatusClass, $author$project$Pages$Test$IndividualValue, status.individualValue.input),
-						$elm$html$Html$Events$onInput(
-						A2($author$project$Pages$Test$ChangeValue, pc, $author$project$Pages$Test$IndividualValue))
-					]),
-				_List_Nil),
-				A2(
-				$elm$html$Html$input,
-				_List_fromArray(
-					[
-						$elm$html$Html$Attributes$type_('number'),
-						$elm$html$Html$Attributes$placeholder('努力値'),
-						A2($author$project$Pages$Test$viewStatusClass, $author$project$Pages$Test$EffortValue, status.effortValue.input),
-						$elm$html$Html$Events$onInput(
-						A2($author$project$Pages$Test$ChangeValue, pc, $author$project$Pages$Test$EffortValue)),
-						$elm$html$Html$Attributes$step('4')
-					]),
-				_List_Nil),
-				A2(
-				$elm$html$Html$div,
-				_List_fromArray(
-					[
-						$elm$html$Html$Attributes$class('column'),
-						A2($elm$html$Html$Attributes$style, 'font-size', '20px')
-					]),
-				_List_fromArray(
-					[
-						$elm$html$Html$text(
-						$author$project$Pages$Test$resultView(
-							A2($author$project$Pages$Test$accessFieldStatus, pc, model.parameters).realNumber))
-					])),
-				$elm$html$Html$text(model.content)
-			]);
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('field'),
+					A2($elm$html$Html$Attributes$style, 'margin-top', '20px')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('label')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text(
+							$author$project$Pages$Test$describeParam(pc))
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('columns control')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$input,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$type_('number'),
+									$elm$html$Html$Attributes$placeholder('種族値'),
+									A2($author$project$Pages$Test$viewStatusClass, $author$project$Pages$Test$BaseStats, status.baseStats.input),
+									$elm$html$Html$Events$onInput(
+									A2($author$project$Pages$Test$ChangeValue, pc, $author$project$Pages$Test$BaseStats))
+								]),
+							_List_Nil),
+							A2(
+							$elm$html$Html$input,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$type_('number'),
+									$elm$html$Html$Attributes$placeholder('個体値'),
+									A2($author$project$Pages$Test$viewStatusClass, $author$project$Pages$Test$IndividualValue, status.individualValue.input),
+									$elm$html$Html$Events$onInput(
+									A2($author$project$Pages$Test$ChangeValue, pc, $author$project$Pages$Test$IndividualValue))
+								]),
+							_List_Nil),
+							A2(
+							$elm$html$Html$input,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$type_('number'),
+									$elm$html$Html$Attributes$placeholder('努力値'),
+									A2($author$project$Pages$Test$viewStatusClass, $author$project$Pages$Test$EffortValue, status.effortValue.input),
+									$elm$html$Html$Events$onInput(
+									A2($author$project$Pages$Test$ChangeValue, pc, $author$project$Pages$Test$EffortValue)),
+									$elm$html$Html$Attributes$step('4')
+								]),
+							_List_Nil),
+							A2(
+							$elm$html$Html$div,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$class('column'),
+									A2($elm$html$Html$Attributes$style, 'font-size', '20px')
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text(
+									$author$project$Pages$Test$resultView(
+										A2($author$project$Pages$Test$accessFieldStatus, pc, model.parameters).realNumber))
+								]))
+						]))
+				]));
 	});
 var $author$project$Pages$Test$view = function (model) {
 	return {
@@ -11575,48 +11617,12 @@ var $author$project$Pages$Test$view = function (model) {
 							[
 								A4($author$project$Pages$Test$viewInput, 'number', 'level', model.content, $author$project$Pages$Test$Level)
 							])),
-						A2(
-						$elm$html$Html$div,
-						_List_fromArray(
-							[
-								$elm$html$Html$Attributes$class('columns')
-							]),
-						A2($author$project$Pages$Test$viewRowInput, $author$project$Pages$Test$HitPoint, model)),
-						A2(
-						$elm$html$Html$div,
-						_List_fromArray(
-							[
-								$elm$html$Html$Attributes$class('columns')
-							]),
-						A2($author$project$Pages$Test$viewRowInput, $author$project$Pages$Test$Attack, model)),
-						A2(
-						$elm$html$Html$div,
-						_List_fromArray(
-							[
-								$elm$html$Html$Attributes$class('columns')
-							]),
-						A2($author$project$Pages$Test$viewRowInput, $author$project$Pages$Test$Defence, model)),
-						A2(
-						$elm$html$Html$div,
-						_List_fromArray(
-							[
-								$elm$html$Html$Attributes$class('columns')
-							]),
-						A2($author$project$Pages$Test$viewRowInput, $author$project$Pages$Test$SpAttack, model)),
-						A2(
-						$elm$html$Html$div,
-						_List_fromArray(
-							[
-								$elm$html$Html$Attributes$class('columns')
-							]),
-						A2($author$project$Pages$Test$viewRowInput, $author$project$Pages$Test$SpDefence, model)),
-						A2(
-						$elm$html$Html$div,
-						_List_fromArray(
-							[
-								$elm$html$Html$Attributes$class('columns')
-							]),
-						A2($author$project$Pages$Test$viewRowInput, $author$project$Pages$Test$Speed, model))
+						A2($author$project$Pages$Test$viewRowInput, $author$project$Pages$Test$HitPoint, model),
+						A2($author$project$Pages$Test$viewRowInput, $author$project$Pages$Test$Attack, model),
+						A2($author$project$Pages$Test$viewRowInput, $author$project$Pages$Test$Defence, model),
+						A2($author$project$Pages$Test$viewRowInput, $author$project$Pages$Test$SpAttack, model),
+						A2($author$project$Pages$Test$viewRowInput, $author$project$Pages$Test$SpDefence, model),
+						A2($author$project$Pages$Test$viewRowInput, $author$project$Pages$Test$Speed, model)
 					]))
 			]),
 		title: 'pokelm'

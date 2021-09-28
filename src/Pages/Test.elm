@@ -1,7 +1,7 @@
 module Pages.Test exposing (Model, Msg, page)
 
 import Gen.Params.Test exposing (Params)
-import Html exposing (Attribute, Html, div, input, nav, span, text)
+import Html exposing (Attribute, Html, div, h2, input, nav, span, text)
 import Html.Attributes exposing (class, placeholder, step, style, type_, value)
 import Html.Events exposing (onInput)
 import Page
@@ -245,29 +245,32 @@ view model =
             ]
         , div [ class "container", style "margin-top" "20px" ]
             [ div [ class "columns" ] [ viewInput "number" "level" model.content Level ]
-            , div [ class "columns" ] <| viewRowInput HitPoint model
-            , div [ class "columns" ] <| viewRowInput Attack model
-            , div [ class "columns" ] <| viewRowInput Defence model
-            , div [ class "columns" ] <| viewRowInput SpAttack model
-            , div [ class "columns" ] <| viewRowInput SpDefence model
-            , div [ class "columns" ] <| viewRowInput Speed model
+            , viewRowInput HitPoint model
+            , viewRowInput Attack model
+            , viewRowInput Defence model
+            , viewRowInput SpAttack model
+            , viewRowInput SpDefence model
+            , viewRowInput Speed model
             ]
         ]
     }
 
 
-viewRowInput : ParamCategory -> Model -> List (Html Msg)
+viewRowInput : ParamCategory -> Model -> Html Msg
 viewRowInput pc model =
     let
         status =
             model.parameters |> accessFieldStatus pc
     in
-    [ input [ type_ "number", placeholder "種族値", viewStatusClass BaseStats status.baseStats.input, onInput (ChangeValue pc BaseStats) ] []
-    , input [ type_ "number", placeholder "個体値", viewStatusClass IndividualValue status.individualValue.input, onInput (ChangeValue pc IndividualValue) ] []
-    , input [ type_ "number", placeholder "努力値", viewStatusClass EffortValue status.effortValue.input, onInput (ChangeValue pc EffortValue), step "4" ] []
-    , div [ class "column", style "font-size" "20px" ] [ text <| resultView <| .realNumber <| accessFieldStatus pc <| model.parameters ]
-    , text model.content
-    ]
+    div [ class "field", style "margin-top" "20px" ]
+        [ div [ class "label" ] [ text <| describeParam pc ]
+        , div [ class "columns control" ]
+            [ input [ type_ "number", placeholder "種族値", viewStatusClass BaseStats status.baseStats.input, onInput (ChangeValue pc BaseStats) ] []
+            , input [ type_ "number", placeholder "個体値", viewStatusClass IndividualValue status.individualValue.input, onInput (ChangeValue pc IndividualValue) ] []
+            , input [ type_ "number", placeholder "努力値", viewStatusClass EffortValue status.effortValue.input, onInput (ChangeValue pc EffortValue), step "4" ] []
+            , div [ class "column", style "font-size" "20px" ] [ text <| resultView <| .realNumber <| accessFieldStatus pc <| model.parameters ]
+            ]
+        ]
 
 
 viewInput : String -> String -> String -> (String -> msg) -> Html msg
@@ -361,3 +364,25 @@ validateIndividualValue iv =
 
     else
         Nothing
+
+
+describeParam : ParamCategory -> String
+describeParam pc =
+    case pc of
+        HitPoint ->
+            "HP"
+
+        Attack ->
+            "こうげき"
+
+        Defence ->
+            "ぼうぎょ"
+
+        SpAttack ->
+            "とくこう"
+
+        SpDefence ->
+            "とくぼう"
+
+        Speed ->
+            "すばやさ"
