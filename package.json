@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "npx elm-spa server",
+    "build": "npx elm-spa build"
   },
   "author": "chouxcreams",
   "license": "MIT",
