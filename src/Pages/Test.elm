@@ -1,4 +1,4 @@
-module Pages.Test exposing (Model, Msg, page)
+module Pages.Test exposing (Model, Msg, Parameters, Status, page)
 
 import Gen.Params.Test exposing (Params)
 import Html exposing (Attribute, Html, button, div, h2, input, nav, span, text)
@@ -37,10 +37,10 @@ type alias Parameters =
 
 
 type alias Nature =
-    { code : NatureCategory
+    { code : String
     , label : String
-    , up : Maybe StatusCategory
-    , down : Maybe StatusCategory
+    , up : Maybe ParamCategory
+    , down : Maybe ParamCategory
     }
 
 
@@ -62,7 +62,7 @@ init : ( Model, Cmd Msg )
 init =
     ( { content = ""
       , level = 50
-      , nature = Nature Serious "まじめ" Nothing Nothing
+      , nature = Nature "serious" "まじめ" Nothing Nothing
       , attack = initStatus
       , parameters =
             { hitPoint = initStatus
@@ -129,16 +129,34 @@ type Msg
     | ChangeValue ParamCategory StatusCategory String
 
 
-calculateStatus : Int -> ParamCategory -> Status -> Status
-calculateStatus level paramCategory status =
+calculateStatus : Int -> Nature -> ParamCategory -> Status -> Status
+calculateStatus level nature paramCategory status =
     let
+        corrector : Maybe ParamCategory -> Float -> (Int -> Int)
+        corrector pcMaybe rate =
+            case pcMaybe of
+                Just pc ->
+                    if pc == paramCategory then
+                        toFloat >> (\x -> x * rate) >> floor
+
+                    else
+                        \x -> x
+
+                Nothing ->
+                    \x -> x
+
         newValue =
             case paramCategory of
                 HitPoint ->
                     (status.baseStats.value * 2 + status.individualValue.value + status.effortValue.value // 4) * level // 100 + level + 10
 
                 _ ->
-                    (status.baseStats.value * 2 + status.individualValue.value + status.effortValue.value // 4) * level // 100 + 5
+                    (status.baseStats.value * 2 + status.individualValue.value + status.effortValue.value // 4)
+                        * level
+                        // 100
+                        + 5
+                        |> corrector nature.up 1.1
+                        |> corrector nature.down 0.9
     in
     { status | realNumber = Just newValue }
 
@@ -248,7 +266,7 @@ update msg model =
                                 |> accessFieldValue sc
                                 |> updateValue input
                                 |> updateStatus sc statusToUpdate
-                                |> calculateStatus model.level pc
+                                |> calculateStatus model.level model.nature pc
                                 |> updateParam pc model.parameters
                     }
     in
