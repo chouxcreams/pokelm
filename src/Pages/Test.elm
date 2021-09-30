@@ -1,7 +1,7 @@
-module Pages.Test exposing (Model, Msg, Parameters, Status, page)
+module Pages.Test exposing (Model, Msg, ParamCategory(..), Status, page)
 
 import Gen.Params.Test exposing (Params)
-import Html exposing (Attribute, Html, button, div, h2, input, nav, span, text)
+import Html exposing (Attribute, Html, button, div, h2, input, nav, option, select, span, text)
 import Html.Attributes exposing (class, placeholder, step, style, type_, value)
 import Html.Events exposing (onInput)
 import Page
@@ -36,16 +36,125 @@ type alias Parameters =
     { hitPoint : Status, attack : Status, defence : Status, spAttack : Status, spDefence : Status, speed : Status }
 
 
+type alias Model =
+    { content : String, level : Int, nature : Nature, attack : Status, parameters : Parameters }
+
+
+type alias NatureCode =
+    String
+
+
 type alias Nature =
-    { code : String
+    { code : NatureCode
     , label : String
     , up : Maybe ParamCategory
     , down : Maybe ParamCategory
     }
 
 
-type alias Model =
-    { content : String, level : Int, nature : Nature, attack : Status, parameters : Parameters }
+type NatureCategory
+    = Adamant
+    | Bashful
+    | Brave
+    | Bold
+    | Calm
+    | Careful
+    | Docile
+    | Gentle
+    | Hardy
+    | Hasty
+    | Impish
+    | Jolly
+    | Lax
+    | Lonely
+    | Mild
+    | Modest
+    | Naive
+    | Naughty
+    | Quiet
+    | Quirky
+    | Rash
+    | Relaxed
+    | Sassy
+    | Serious
+    | Timid
+
+
+listNatureCode : List NatureCode
+listNatureCode =
+    [ "adamant"
+    , "brave"
+    , "serious"
+    ]
+
+
+
+--[ "adamant"
+--, "bashful"
+--, "brave"
+--, "bold"
+--, "calm"
+--, "careful"
+--, "docile"
+--, "gentle"
+--, "hardy"
+--, "hasty"
+--, "impish"
+--, "jolly"
+--, "lax"
+--, "lonely"
+--, "mild"
+--, "modest"
+--, "naive"
+--, "naughty"
+--, "quiet"
+--, "quirky"
+--, "rash"
+--, "relaxed"
+--, "sassy"
+--, "serious"
+--, "timid"
+--]
+
+
+categoryToNature : NatureCategory -> Nature
+categoryToNature natureCategory =
+    case natureCategory of
+        Adamant ->
+            Nature "adamant" "いじっぱり" (Just Attack) (Just SpAttack)
+
+        Brave ->
+            Nature "brave" "ゆうかん" (Just Attack) (Just Speed)
+
+        _ ->
+            Nature "serious" "まじめ" Nothing Nothing
+
+
+codeToCategory : NatureCode -> NatureCategory
+codeToCategory code =
+    if code == "adamant" then
+        Adamant
+
+    else if code == "brave" then
+        Brave
+
+    else
+        Serious
+
+
+codeToNature : NatureCode -> Nature
+codeToNature =
+    codeToCategory >> categoryToNature
+
+
+selectNature : Nature -> Html msg
+selectNature nature =
+    option [ value nature.code ] [ text nature.label ]
+
+
+listNatureSelect : List (Html msg)
+listNatureSelect =
+    List.map (codeToNature >> selectNature) listNatureCode
 
 
 initValue : Int -> Value
@@ -94,34 +203,6 @@ type ParamCategory
     | SpAttack
     | SpDefence
     | Speed
-
-
-type NatureCategory
-    = Adamant
-    | Bashful
-    | Brave
-    | Bold
-    | Calm
-    | Careful
-    | Docile
-    | Gentle
-    | Hardy
-    | Hasty
-    | Impish
-    | Jolly
-    | Lax
-    | Lonely
-    | Mild
-    | Modest
-    | Naive
-    | Naughty
-    | Quiet
-    | Quirky
-    | Rash
-    | Relaxed
-    | Sassy
-    | Serious
-    | Timid
 
 
 type Msg
@@ -299,7 +380,10 @@ view model =
                 [ text "Pokelm" ]
             ]
         , div [ class "container", style "margin-top" "20px" ]
-            [ div [ class "columns" ] [ viewInput "number" "level" model.content Level ]
+            [ div [ class "columns" ]
+                [ viewInput "number" "level" model.content Level
+                , select [ class "column" ] listNatureSelect
+                ]
             , viewRowInput HitPoint model
             , viewRowInput Attack model
             , viewRowInput Defence model

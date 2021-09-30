@@ -11186,7 +11186,6 @@ var $author$project$Pages$Test$Nature = F4(
 	function (code, label, up, down) {
 		return {code: code, down: down, label: label, up: up};
 	});
-var $author$project$Pages$Test$Serious = {$: 'Serious'};
 var $author$project$Pages$Test$Status = F4(
 	function (baseStats, effortValue, individualValue, realNumber) {
 		return {baseStats: baseStats, effortValue: effortValue, individualValue: individualValue, realNumber: realNumber};
@@ -11212,7 +11211,7 @@ var $author$project$Pages$Test$init = _Utils_Tuple2(
 		attack: $author$project$Pages$Test$initStatus,
 		content: '',
 		level: 50,
-		nature: A4($author$project$Pages$Test$Nature, $author$project$Pages$Test$Serious, 'まじめ', $elm$core$Maybe$Nothing, $elm$core$Maybe$Nothing),
+		nature: A4($author$project$Pages$Test$Nature, 'serious', 'まじめ', $elm$core$Maybe$Nothing, $elm$core$Maybe$Nothing),
 		parameters: {attack: $author$project$Pages$Test$initStatus, defence: $author$project$Pages$Test$initStatus, hitPoint: $author$project$Pages$Test$initStatus, spAttack: $author$project$Pages$Test$initStatus, spDefence: $author$project$Pages$Test$initStatus, speed: $author$project$Pages$Test$initStatus}
 	},
 	$elm$core$Platform$Cmd$none);
@@ -11263,13 +11262,38 @@ var $author$project$Pages$Test$accessFieldValue = function (sc) {
 			};
 	}
 };
-var $author$project$Pages$Test$calculateStatus = F3(
-	function (level, paramCategory, status) {
+var $author$project$Pages$Test$calculateStatus = F4(
+	function (level, nature, paramCategory, status) {
+		var corrector = F2(
+			function (pcMaybe, rate) {
+				if (pcMaybe.$ === 'Just') {
+					var pc = pcMaybe.a;
+					return _Utils_eq(pc, paramCategory) ? A2(
+						$elm$core$Basics$composeR,
+						$elm$core$Basics$toFloat,
+						A2(
+							$elm$core$Basics$composeR,
+							function (x) {
+								return x * rate;
+							},
+							$elm$core$Basics$floor)) : function (x) {
+						return x;
+					};
+				} else {
+					return function (x) {
+						return x;
+					};
+				}
+			});
 		var newValue = function () {
 			if (paramCategory.$ === 'HitPoint') {
 				return (((((((status.baseStats.value * 2) + status.individualValue.value) + ((status.effortValue.value / 4) | 0)) * level) / 100) | 0) + level) + 10;
 			} else {
-				return ((((((status.baseStats.value * 2) + status.individualValue.value) + ((status.effortValue.value / 4) | 0)) * level) / 100) | 0) + 5;
+				return A3(
+					corrector,
+					nature.down,
+					0.9,
+					A3(corrector, nature.up, 1.1, ((((((status.baseStats.value * 2) + status.individualValue.value) + ((status.effortValue.value / 4) | 0)) * level) / 100) | 0) + 5));
 			}
 		}();
 		return _Utils_update(
@@ -11372,9 +11396,10 @@ var $author$project$Pages$Test$update = F2(
 								$author$project$Pages$Test$updateParam,
 								pc,
 								model.parameters,
-								A3(
+								A4(
 									$author$project$Pages$Test$calculateStatus,
 									model.level,
+									model.nature,
 									pc,
 									A3(
 										$author$project$Pages$Test$updateStatus,
@@ -11399,7 +11424,54 @@ var $author$project$Pages$Test$Level = function (a) {
 var $author$project$Pages$Test$SpAttack = {$: 'SpAttack'};
 var $author$project$Pages$Test$SpDefence = {$: 'SpDefence'};
 var $author$project$Pages$Test$Speed = {$: 'Speed'};
+var $author$project$Pages$Test$categoryToNature = function (natureCategory) {
+	switch (natureCategory.$) {
+		case 'Adamant':
+			return A4(
+				$author$project$Pages$Test$Nature,
+				'adamant',
+				'いじっぱり',
+				$elm$core$Maybe$Just($author$project$Pages$Test$Attack),
+				$elm$core$Maybe$Just($author$project$Pages$Test$SpAttack));
+		case 'Brave':
+			return A4(
+				$author$project$Pages$Test$Nature,
+				'brave',
+				'ゆうかん',
+				$elm$core$Maybe$Just($author$project$Pages$Test$Attack),
+				$elm$core$Maybe$Just($author$project$Pages$Test$Speed));
+		default:
+			return A4($author$project$Pages$Test$Nature, 'serious', 'まじめ', $elm$core$Maybe$Nothing, $elm$core$Maybe$Nothing);
+	}
+};
+var $author$project$Pages$Test$Adamant = {$: 'Adamant'};
+var $author$project$Pages$Test$Brave = {$: 'Brave'};
+var $author$project$Pages$Test$Serious = {$: 'Serious'};
+var $author$project$Pages$Test$codeToCategory = function (code) {
+	return (code === 'adamant') ? $author$project$Pages$Test$Adamant : ((code === 'brave') ? $author$project$Pages$Test$Brave : $author$project$Pages$Test$Serious);
+};
+var $author$project$Pages$Test$codeToNature = A2($elm$core$Basics$composeR, $author$project$Pages$Test$codeToCategory, $author$project$Pages$Test$categoryToNature);
+var $author$project$Pages$Test$listNatureCode = _List_fromArray(
+	['adamant', 'brave', 'serious']);
+var $elm$html$Html$option = _VirtualDom_node('option');
+var $author$project$Pages$Test$selectNature = function (nature) {
+	return A2(
+		$elm$html$Html$option,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$value(nature.code)
+			]),
+		_List_fromArray(
+			[
+				$elm$html$Html$text(nature.label)
+			]));
+};
+var $author$project$Pages$Test$listNatureSelect = A2(
+	$elm$core$List$map,
+	A2($elm$core$Basics$composeR, $author$project$Pages$Test$codeToNature, $author$project$Pages$Test$selectNature),
+	$author$project$Pages$Test$listNatureCode);
 var $elm$html$Html$nav = _VirtualDom_node('nav');
+var $elm$html$Html$select = _VirtualDom_node('select');
 var $author$project$Pages$Test$isValid = function (string) {
 	var _v0 = $elm$core$String$toInt(string);
 	if (_v0.$ === 'Just') {
@@ -11650,7 +11722,14 @@ var $author$project$Pages$Test$view = function (model) {
 							]),
 						_List_fromArray(
 							[
-								A4($author$project$Pages$Test$viewInput, 'number', 'level', model.content, $author$project$Pages$Test$Level)
+								A4($author$project$Pages$Test$viewInput, 'number', 'level', model.content, $author$project$Pages$Test$Level),
+								A2(
+								$elm$html$Html$select,
+								_List_fromArray(
+									[
+										$elm$html$Html$Attributes$class('column')
+									]),
+								$author$project$Pages$Test$listNatureSelect)
 							])),
 						A2($author$project$Pages$Test$viewRowInput, $author$project$Pages$Test$HitPoint, model),
 						A2($author$project$Pages$Test$viewRowInput, $author$project$Pages$Test$Attack, model),
