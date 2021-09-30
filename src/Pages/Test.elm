@@ -3,7 +3,8 @@ module Pages.Test exposing (Model, Msg, ParamCategory(..), Status, page)
 import Gen.Params.Test exposing (Params)
 import Html exposing (Attribute, Html, button, div, h2, input, nav, option, select, span, text)
 import Html.Attributes exposing (class, placeholder, step, style, type_, value)
-import Html.Events exposing (onInput)
+import Html.Events as Events exposing (on, onInput)
+import Json.Decode as Json
 import Page
 import Request
 import Shared
@@ -24,6 +25,15 @@ page shared req =
 -- INIT
 
 
+onChange : (String -> msg) -> Attribute msg
+onChange handler =
+    on "change" (Json.map handler Events.targetValue)
+
+
+type alias Level =
+    Int
+
+
 type alias Value =
     { value : Int, input : String }
 
@@ -37,7 +47,7 @@ type alias Parameters =
 
 
 type alias Model =
-    { content : String, level : Int, nature : Nature, attack : Status, parameters : Parameters }
+    { content : String, level : Level, nature : Nature, attack : Status, parameters : Parameters }
 
 
 type alias NatureCode =
@@ -208,9 +218,10 @@ type ParamCategory
 type Msg
     = Level String
     | ChangeValue ParamCategory StatusCategory String
+    | ChangeNature NatureCode
 
 
-calculateStatus : Int -> Nature -> ParamCategory -> Status -> Status
+calculateStatus : Level -> Nature -> ParamCategory -> Status -> Status
 calculateStatus level nature paramCategory status =
     let
         corrector : Maybe ParamCategory -> Float -> (Int -> Int)
@@ -240,6 +251,22 @@ calculateStatus level nature paramCategory status =
                         |> corrector nature.down 0.9
     in
     { status | realNumber = Just newValue }
+
+
+calculateParameters : Nature -> Level -> Parameters -> Parameters
+calculateParameters nature level params =
+    let
+        curriedCalculateStatus : ParamCategory -> Status -> Status
+        curriedCalculateStatus =
+            calculateStatus level nature
+    in
+    { hitPoint = curriedCalculateStatus HitPoint params.hitPoint
+    , attack = curriedCalculateStatus Attack params.attack
+    , defence = curriedCalculateStatus Defence params.defence
+    , spAttack = curriedCalculateStatus SpAttack params.spAttack
+    , spDefence = curriedCalculateStatus SpDefence params.spDefence
+    , speed = curriedCalculateStatus Speed params.speed
+    }
 
 
 updateValue : String -> Value -> Value
@@ -333,7 +360,10 @@ update msg model =
                             model
 
                         Just newLevel ->
-                            { model | level = newLevel }
+                            { model
+                                | level = newLevel
+                                , parameters = calculateParameters model.nature newLevel model.parameters
+                            }
 
                 ChangeValue pc sc input ->
                     { model
@@ -349,6 +379,16 @@ update msg model =
                                 |> updateStatus sc statusToUpdate
                                 |> calculateStatus model.level model.nature pc
                                 |> updateParam pc model.parameters
+                    }
+
+                ChangeNature input ->
+                    let
+                        newNature =
+                            codeToNature input
+                    in
+                    { model
+                        | nature = newNature
+                        , parameters = calculateParameters newNature model.level model.parameters
                     }
     in
     ( newModel, Cmd.none )
@@ -382,7 +422,7 @@ view model =
         , div [ class "container", style "margin-top" "20px" ]
             [ div [ class "columns" ]
                 [ viewInput "number" "level" model.content Level
-                , select [ class "column" ] listNatureSelect
+                , select [ class "column", onChange ChangeNature ] listNatureSelect
                 ]
             , viewRowInput HitPoint model
             , viewRowInput Attack model
@@ -456,7 +496,7 @@ isValid string =
                 False
 
 
-validateLevel : String -> Maybe Int
+validateLevel : String -> Maybe Level
 validateLevel input =
     case String.toInt input of
         Nothing ->

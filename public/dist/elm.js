@@ -11262,6 +11262,12 @@ var $author$project$Pages$Test$accessFieldValue = function (sc) {
 			};
 	}
 };
+var $author$project$Pages$Test$Attack = {$: 'Attack'};
+var $author$project$Pages$Test$Defence = {$: 'Defence'};
+var $author$project$Pages$Test$HitPoint = {$: 'HitPoint'};
+var $author$project$Pages$Test$SpAttack = {$: 'SpAttack'};
+var $author$project$Pages$Test$SpDefence = {$: 'SpDefence'};
+var $author$project$Pages$Test$Speed = {$: 'Speed'};
 var $author$project$Pages$Test$calculateStatus = F4(
 	function (level, nature, paramCategory, status) {
 		var corrector = F2(
@@ -11302,6 +11308,45 @@ var $author$project$Pages$Test$calculateStatus = F4(
 				realNumber: $elm$core$Maybe$Just(newValue)
 			});
 	});
+var $author$project$Pages$Test$calculateParameters = F3(
+	function (nature, level, params) {
+		var curriedCalculateStatus = A2($author$project$Pages$Test$calculateStatus, level, nature);
+		return {
+			attack: A2(curriedCalculateStatus, $author$project$Pages$Test$Attack, params.attack),
+			defence: A2(curriedCalculateStatus, $author$project$Pages$Test$Defence, params.defence),
+			hitPoint: A2(curriedCalculateStatus, $author$project$Pages$Test$HitPoint, params.hitPoint),
+			spAttack: A2(curriedCalculateStatus, $author$project$Pages$Test$SpAttack, params.spAttack),
+			spDefence: A2(curriedCalculateStatus, $author$project$Pages$Test$SpDefence, params.spDefence),
+			speed: A2(curriedCalculateStatus, $author$project$Pages$Test$Speed, params.speed)
+		};
+	});
+var $author$project$Pages$Test$categoryToNature = function (natureCategory) {
+	switch (natureCategory.$) {
+		case 'Adamant':
+			return A4(
+				$author$project$Pages$Test$Nature,
+				'adamant',
+				'いじっぱり',
+				$elm$core$Maybe$Just($author$project$Pages$Test$Attack),
+				$elm$core$Maybe$Just($author$project$Pages$Test$SpAttack));
+		case 'Brave':
+			return A4(
+				$author$project$Pages$Test$Nature,
+				'brave',
+				'ゆうかん',
+				$elm$core$Maybe$Just($author$project$Pages$Test$Attack),
+				$elm$core$Maybe$Just($author$project$Pages$Test$Speed));
+		default:
+			return A4($author$project$Pages$Test$Nature, 'serious', 'まじめ', $elm$core$Maybe$Nothing, $elm$core$Maybe$Nothing);
+	}
+};
+var $author$project$Pages$Test$Adamant = {$: 'Adamant'};
+var $author$project$Pages$Test$Brave = {$: 'Brave'};
+var $author$project$Pages$Test$Serious = {$: 'Serious'};
+var $author$project$Pages$Test$codeToCategory = function (code) {
+	return (code === 'adamant') ? $author$project$Pages$Test$Adamant : ((code === 'brave') ? $author$project$Pages$Test$Brave : $author$project$Pages$Test$Serious);
+};
+var $author$project$Pages$Test$codeToNature = A2($elm$core$Basics$composeR, $author$project$Pages$Test$codeToCategory, $author$project$Pages$Test$categoryToNature);
 var $author$project$Pages$Test$updateParam = F3(
 	function (pc, params, status) {
 		switch (pc.$) {
@@ -11372,85 +11417,68 @@ var $author$project$Pages$Test$validateLevel = function (input) {
 var $author$project$Pages$Test$update = F2(
 	function (msg, model) {
 		var newModel = function () {
-			if (msg.$ === 'Level') {
-				var levelInput = msg.a;
-				var _v1 = $author$project$Pages$Test$validateLevel(levelInput);
-				if (_v1.$ === 'Nothing') {
-					return model;
-				} else {
-					var newLevel = _v1.a;
+			switch (msg.$) {
+				case 'Level':
+					var levelInput = msg.a;
+					var _v1 = $author$project$Pages$Test$validateLevel(levelInput);
+					if (_v1.$ === 'Nothing') {
+						return model;
+					} else {
+						var newLevel = _v1.a;
+						return _Utils_update(
+							model,
+							{
+								level: newLevel,
+								parameters: A3($author$project$Pages$Test$calculateParameters, model.nature, newLevel, model.parameters)
+							});
+					}
+				case 'ChangeValue':
+					var pc = msg.a;
+					var sc = msg.b;
+					var input = msg.c;
 					return _Utils_update(
 						model,
-						{level: newLevel});
-				}
-			} else {
-				var pc = msg.a;
-				var sc = msg.b;
-				var input = msg.c;
-				return _Utils_update(
-					model,
-					{
-						parameters: function () {
-							var statusToUpdate = A2($author$project$Pages$Test$accessFieldStatus, pc, model.parameters);
-							return A3(
-								$author$project$Pages$Test$updateParam,
-								pc,
-								model.parameters,
-								A4(
-									$author$project$Pages$Test$calculateStatus,
-									model.level,
-									model.nature,
+						{
+							parameters: function () {
+								var statusToUpdate = A2($author$project$Pages$Test$accessFieldStatus, pc, model.parameters);
+								return A3(
+									$author$project$Pages$Test$updateParam,
 									pc,
-									A3(
-										$author$project$Pages$Test$updateStatus,
-										sc,
-										statusToUpdate,
-										A2(
-											$author$project$Pages$Test$updateValue,
-											input,
-											A2($author$project$Pages$Test$accessFieldValue, sc, statusToUpdate)))));
-						}()
-					});
+									model.parameters,
+									A4(
+										$author$project$Pages$Test$calculateStatus,
+										model.level,
+										model.nature,
+										pc,
+										A3(
+											$author$project$Pages$Test$updateStatus,
+											sc,
+											statusToUpdate,
+											A2(
+												$author$project$Pages$Test$updateValue,
+												input,
+												A2($author$project$Pages$Test$accessFieldValue, sc, statusToUpdate)))));
+							}()
+						});
+				default:
+					var input = msg.a;
+					var newNature = $author$project$Pages$Test$codeToNature(input);
+					return _Utils_update(
+						model,
+						{
+							nature: newNature,
+							parameters: A3($author$project$Pages$Test$calculateParameters, newNature, model.level, model.parameters)
+						});
 			}
 		}();
 		return _Utils_Tuple2(newModel, $elm$core$Platform$Cmd$none);
 	});
-var $author$project$Pages$Test$Attack = {$: 'Attack'};
-var $author$project$Pages$Test$Defence = {$: 'Defence'};
-var $author$project$Pages$Test$HitPoint = {$: 'HitPoint'};
+var $author$project$Pages$Test$ChangeNature = function (a) {
+	return {$: 'ChangeNature', a: a};
+};
 var $author$project$Pages$Test$Level = function (a) {
 	return {$: 'Level', a: a};
 };
-var $author$project$Pages$Test$SpAttack = {$: 'SpAttack'};
-var $author$project$Pages$Test$SpDefence = {$: 'SpDefence'};
-var $author$project$Pages$Test$Speed = {$: 'Speed'};
-var $author$project$Pages$Test$categoryToNature = function (natureCategory) {
-	switch (natureCategory.$) {
-		case 'Adamant':
-			return A4(
-				$author$project$Pages$Test$Nature,
-				'adamant',
-				'いじっぱり',
-				$elm$core$Maybe$Just($author$project$Pages$Test$Attack),
-				$elm$core$Maybe$Just($author$project$Pages$Test$SpAttack));
-		case 'Brave':
-			return A4(
-				$author$project$Pages$Test$Nature,
-				'brave',
-				'ゆうかん',
-				$elm$core$Maybe$Just($author$project$Pages$Test$Attack),
-				$elm$core$Maybe$Just($author$project$Pages$Test$Speed));
-		default:
-			return A4($author$project$Pages$Test$Nature, 'serious', 'まじめ', $elm$core$Maybe$Nothing, $elm$core$Maybe$Nothing);
-	}
-};
-var $author$project$Pages$Test$Adamant = {$: 'Adamant'};
-var $author$project$Pages$Test$Brave = {$: 'Brave'};
-var $author$project$Pages$Test$Serious = {$: 'Serious'};
-var $author$project$Pages$Test$codeToCategory = function (code) {
-	return (code === 'adamant') ? $author$project$Pages$Test$Adamant : ((code === 'brave') ? $author$project$Pages$Test$Brave : $author$project$Pages$Test$Serious);
-};
-var $author$project$Pages$Test$codeToNature = A2($elm$core$Basics$composeR, $author$project$Pages$Test$codeToCategory, $author$project$Pages$Test$categoryToNature);
 var $author$project$Pages$Test$listNatureCode = _List_fromArray(
 	['adamant', 'brave', 'serious']);
 var $elm$html$Html$option = _VirtualDom_node('option');
@@ -11471,6 +11499,12 @@ var $author$project$Pages$Test$listNatureSelect = A2(
 	A2($elm$core$Basics$composeR, $author$project$Pages$Test$codeToNature, $author$project$Pages$Test$selectNature),
 	$author$project$Pages$Test$listNatureCode);
 var $elm$html$Html$nav = _VirtualDom_node('nav');
+var $author$project$Pages$Test$onChange = function (handler) {
+	return A2(
+		$elm$html$Html$Events$on,
+		'change',
+		A2($elm$json$Json$Decode$map, handler, $elm$html$Html$Events$targetValue));
+};
 var $elm$html$Html$select = _VirtualDom_node('select');
 var $author$project$Pages$Test$isValid = function (string) {
 	var _v0 = $elm$core$String$toInt(string);
@@ -11727,7 +11761,8 @@ var $author$project$Pages$Test$view = function (model) {
 								$elm$html$Html$select,
 								_List_fromArray(
 									[
-										$elm$html$Html$Attributes$class('column')
+										$elm$html$Html$Attributes$class('column'),
+										$author$project$Pages$Test$onChange($author$project$Pages$Test$ChangeNature)
 									]),
 								$author$project$Pages$Test$listNatureSelect)
 							])),
@@ -12086,4 +12121,4 @@ var $author$project$Main$view = function (model) {
 };
 var $author$project$Main$main = $elm$browser$Browser$application(
 	{init: $author$project$Main$init, onUrlChange: $author$project$Main$ChangedUrl, onUrlRequest: $author$project$Main$ClickedLink, subscriptions: $author$project$Main$subscriptions, update: $author$project$Main$update, view: $author$project$Main$view});
-_Platform_export({'Main':{'init':$author$project$Main$main($elm$json$Json$Decode$value)({"versions":{"elm":"0.19.1"},"types":{"message":"Main.Msg","aliases":{"Gen.Pages.Msg":{"args":[],"type":"Gen.Msg.Msg"},"Url.Url":{"args":[],"type":"{ protocol : Url.Protocol, host : String.String, port_ : Maybe.Maybe Basics.Int, path : String.String, query : Maybe.Maybe String.String, fragment : Maybe.Maybe String.String }"}},"unions":{"Main.Msg":{"args":[],"tags":{"ChangedUrl":["Url.Url"],"ClickedLink":["Browser.UrlRequest"],"Shared":["Shared.Msg"],"Page":["Gen.Pages.Msg"]}},"Basics.Int":{"args":[],"tags":{"Int":[]}},"Maybe.Maybe":{"args":["a"],"tags":{"Just":["a"],"Nothing":[]}},"Gen.Msg.Msg":{"args":[],"tags":{"Test":["Pages.Test.Msg"]}},"Shared.Msg":{"args":[],"tags":{"NoOp":[]}},"Url.Protocol":{"args":[],"tags":{"Http":[],"Https":[]}},"String.String":{"args":[],"tags":{"String":[]}},"Browser.UrlRequest":{"args":[],"tags":{"Internal":["Url.Url"],"External":["String.String"]}},"Pages.Test.Msg":{"args":[],"tags":{"Level":["String.String"],"ChangeValue":["Pages.Test.ParamCategory","Pages.Test.StatusCategory","String.String"]}},"Pages.Test.ParamCategory":{"args":[],"tags":{"HitPoint":[],"Attack":[],"Defence":[],"SpAttack":[],"SpDefence":[],"Speed":[]}},"Pages.Test.StatusCategory":{"args":[],"tags":{"BaseStats":[],"EffortValue":[],"IndividualValue":[]}}}}})}});}(this));
+_Platform_export({'Main':{'init':$author$project$Main$main($elm$json$Json$Decode$value)({"versions":{"elm":"0.19.1"},"types":{"message":"Main.Msg","aliases":{"Gen.Pages.Msg":{"args":[],"type":"Gen.Msg.Msg"},"Url.Url":{"args":[],"type":"{ protocol : Url.Protocol, host : String.String, port_ : Maybe.Maybe Basics.Int, path : String.String, query : Maybe.Maybe String.String, fragment : Maybe.Maybe String.String }"},"Pages.Test.NatureCode":{"args":[],"type":"String.String"}},"unions":{"Main.Msg":{"args":[],"tags":{"ChangedUrl":["Url.Url"],"ClickedLink":["Browser.UrlRequest"],"Shared":["Shared.Msg"],"Page":["Gen.Pages.Msg"]}},"Basics.Int":{"args":[],"tags":{"Int":[]}},"Maybe.Maybe":{"args":["a"],"tags":{"Just":["a"],"Nothing":[]}},"Gen.Msg.Msg":{"args":[],"tags":{"Test":["Pages.Test.Msg"]}},"Shared.Msg":{"args":[],"tags":{"NoOp":[]}},"Url.Protocol":{"args":[],"tags":{"Http":[],"Https":[]}},"String.String":{"args":[],"tags":{"String":[]}},"Browser.UrlRequest":{"args":[],"tags":{"Internal":["Url.Url"],"External":["String.String"]}},"Pages.Test.Msg":{"args":[],"tags":{"Level":["String.String"],"ChangeValue":["Pages.Test.ParamCategory","Pages.Test.StatusCategory","String.String"],"ChangeNature":["Pages.Test.NatureCode"]}},"Pages.Test.ParamCategory":{"args":[],"tags":{"HitPoint":[],"Attack":[],"Defence":[],"SpAttack":[],"SpDefence":[],"Speed":[]}},"Pages.Test.StatusCategory":{"args":[],"tags":{"BaseStats":[],"EffortValue":[],"IndividualValue":[]}}}}})}});}(this));
