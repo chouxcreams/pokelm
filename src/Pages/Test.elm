@@ -64,17 +64,13 @@ type alias Nature =
 
 type NatureCategory
     = Adamant
-    | Bashful
     | Brave
     | Bold
     | Calm
     | Careful
-    | Docile
     | Gentle
-    | Hardy
     | Hasty
     | Impish
-    | Jolly
     | Lax
     | Lonely
     | Mild
@@ -82,8 +78,6 @@ type NatureCategory
     | Naive
     | Naughty
     | Quiet
-    | Quirky
-    | Rash
     | Relaxed
     | Sassy
     | Serious
@@ -92,52 +86,87 @@ type NatureCategory
 
 listNatureCode : List NatureCode
 listNatureCode =
-    [ "adamant"
+    [ "serious"
+    , "adamant"
     , "brave"
-    , "serious"
+    , "bold"
+    , "calm"
+    , "careful"
+    , "gentle"
+    , "hasty"
+    , "impish"
+    , "lax"
+    , "lonely"
+    , "mild"
+    , "modest"
+    , "naive"
+    , "naughty"
+    , "quiet"
+    , "relaxed"
+    , "sassy"
+    , "timid"
     ]
-
-
-
---[ "adamant"
---, "bashful"
---, "brave"
---, "bold"
---, "calm"
---, "careful"
---, "docile"
---, "gentle"
---, "hardy"
---, "hasty"
---, "impish"
---, "jolly"
---, "lax"
---, "lonely"
---, "mild"
---, "modest"
---, "naive"
---, "naughty"
---, "quiet"
---, "quirky"
---, "rash"
---, "relaxed"
---, "sassy"
---, "serious"
---, "timid"
---]
 
 
 categoryToNature : NatureCategory -> Nature
 categoryToNature natureCategory =
     case natureCategory of
+        Serious ->
+            Nature "serious" "まじめ" Nothing Nothing
+
         Adamant ->
             Nature "adamant" "いじっぱり" (Just Attack) (Just SpAttack)
 
         Brave ->
             Nature "brave" "ゆうかん" (Just Attack) (Just Speed)
 
-        _ ->
-            Nature "serious" "まじめ" Nothing Nothing
+        Bold ->
+            Nature "bold" "ずぶとい" (Just Defence) (Just Attack)
+
+        Calm ->
+            Nature "calm" "おだやか" (Just SpDefence) (Just Attack)
+
+        Careful ->
+            Nature "careful" "しんちょう" (Just SpDefence) (Just SpAttack)
+
+        Gentle ->
+            Nature "gentle" "おとなしい" (Just SpDefence) (Just Defence)
+
+        Hasty ->
+            Nature "hasty" "せっかち" (Just Speed) (Just Defence)
+
+        Impish ->
+            Nature "impish" "わんぱく" (Just Defence) (Just SpAttack)
+
+        Lax ->
+            Nature "lax" "のうてんき" (Just Defence) (Just SpDefence)
+
+        Lonely ->
+            Nature "lonely" "さみしがり" (Just Attack) (Just Defence)
+
+        Mild ->
+            Nature "mild" "おっとり" (Just SpAttack) (Just Defence)
+
+        Modest ->
+            Nature "modest" "ひかえめ" (Just SpAttack) (Just Attack)
+
+        Naive ->
+            Nature "naive" "むじゃき" (Just Speed) (Just SpDefence)
+
+        Naughty ->
+            Nature "naughty" "やんちゃ" (Just Attack) (Just SpDefence)
+
+        Quiet ->
+            Nature "quiet" "れいせい" (Just SpAttack) (Just Speed)
+
+        Relaxed ->
+            Nature "relaxed" "のんき" (Just Defence) (Just Speed)
+
+        Sassy ->
+            Nature "sassy" "なまいき" (Just SpDefence) (Just Speed)
+
+        Timid ->
+            Nature "timid" "おくびょう" (Just Speed) (Just Attack)
 
 
 codeToCategory : NatureCode -> NatureCategory
@@ -147,6 +176,54 @@ codeToCategory code =
 
     else if code == "brave" then
         Brave
+
+    else if code == "bold" then
+        Bold
+
+    else if code == "calm" then
+        Calm
+
+    else if code == "careful" then
+        Careful
+
+    else if code == "gentle" then
+        Gentle
+
+    else if code == "hasty" then
+        Hasty
+
+    else if code == "impish" then
+        Impish
+
+    else if code == "lax" then
+        Lax
+
+    else if code == "lonely" then
+        Lonely
+
+    else if code == "mild" then
+        Mild
+
+    else if code == "modest" then
+        Modest
+
+    else if code == "naive" then
+        Naive
+
+    else if code == "naughty" then
+        Naughty
+
+    else if code == "quiet" then
+        Quiet
+
+    else if code == "relaxed" then
+        Relaxed
+
+    else if code == "sassy" then
+        Sassy
+
+    else if code == "timid" then
+        Timid
 
     else
         Serious

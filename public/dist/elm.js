@@ -11322,6 +11322,8 @@ var $author$project$Pages$Test$calculateParameters = F3(
 	});
 var $author$project$Pages$Test$categoryToNature = function (natureCategory) {
 	switch (natureCategory.$) {
+		case 'Serious':
+			return A4($author$project$Pages$Test$Nature, 'serious', 'まじめ', $elm$core$Maybe$Nothing, $elm$core$Maybe$Nothing);
 		case 'Adamant':
 			return A4(
 				$author$project$Pages$Test$Nature,
@@ -11336,15 +11338,141 @@ var $author$project$Pages$Test$categoryToNature = function (natureCategory) {
 				'ゆうかん',
 				$elm$core$Maybe$Just($author$project$Pages$Test$Attack),
 				$elm$core$Maybe$Just($author$project$Pages$Test$Speed));
+		case 'Bold':
+			return A4(
+				$author$project$Pages$Test$Nature,
+				'bold',
+				'ずぶとい',
+				$elm$core$Maybe$Just($author$project$Pages$Test$Defence),
+				$elm$core$Maybe$Just($author$project$Pages$Test$Attack));
+		case 'Calm':
+			return A4(
+				$author$project$Pages$Test$Nature,
+				'calm',
+				'おだやか',
+				$elm$core$Maybe$Just($author$project$Pages$Test$SpDefence),
+				$elm$core$Maybe$Just($author$project$Pages$Test$Attack));
+		case 'Careful':
+			return A4(
+				$author$project$Pages$Test$Nature,
+				'careful',
+				'しんちょう',
+				$elm$core$Maybe$Just($author$project$Pages$Test$SpDefence),
+				$elm$core$Maybe$Just($author$project$Pages$Test$SpAttack));
+		case 'Gentle':
+			return A4(
+				$author$project$Pages$Test$Nature,
+				'gentle',
+				'おとなしい',
+				$elm$core$Maybe$Just($author$project$Pages$Test$SpDefence),
+				$elm$core$Maybe$Just($author$project$Pages$Test$Defence));
+		case 'Hasty':
+			return A4(
+				$author$project$Pages$Test$Nature,
+				'hasty',
+				'せっかち',
+				$elm$core$Maybe$Just($author$project$Pages$Test$Speed),
+				$elm$core$Maybe$Just($author$project$Pages$Test$Defence));
+		case 'Impish':
+			return A4(
+				$author$project$Pages$Test$Nature,
+				'impish',
+				'わんぱく',
+				$elm$core$Maybe$Just($author$project$Pages$Test$Defence),
+				$elm$core$Maybe$Just($author$project$Pages$Test$SpAttack));
+		case 'Lax':
+			return A4(
+				$author$project$Pages$Test$Nature,
+				'lax',
+				'のうてんき',
+				$elm$core$Maybe$Just($author$project$Pages$Test$Defence),
+				$elm$core$Maybe$Just($author$project$Pages$Test$SpDefence));
+		case 'Lonely':
+			return A4(
+				$author$project$Pages$Test$Nature,
+				'lonely',
+				'さみしがり',
+				$elm$core$Maybe$Just($author$project$Pages$Test$Attack),
+				$elm$core$Maybe$Just($author$project$Pages$Test$Defence));
+		case 'Mild':
+			return A4(
+				$author$project$Pages$Test$Nature,
+				'mild',
+				'おっとり',
+				$elm$core$Maybe$Just($author$project$Pages$Test$SpAttack),
+				$elm$core$Maybe$Just($author$project$Pages$Test$Defence));
+		case 'Modest':
+			return A4(
+				$author$project$Pages$Test$Nature,
+				'modest',
+				'ひかえめ',
+				$elm$core$Maybe$Just($author$project$Pages$Test$SpAttack),
+				$elm$core$Maybe$Just($author$project$Pages$Test$Attack));
+		case 'Naive':
+			return A4(
+				$author$project$Pages$Test$Nature,
+				'naive',
+				'むじゃき',
+				$elm$core$Maybe$Just($author$project$Pages$Test$Speed),
+				$elm$core$Maybe$Just($author$project$Pages$Test$SpDefence));
+		case 'Naughty':
+			return A4(
+				$author$project$Pages$Test$Nature,
+				'naughty',
+				'やんちゃ',
+				$elm$core$Maybe$Just($author$project$Pages$Test$Attack),
+				$elm$core$Maybe$Just($author$project$Pages$Test$SpDefence));
+		case 'Quiet':
+			return A4(
+				$author$project$Pages$Test$Nature,
+				'quiet',
+				'れいせい',
+				$elm$core$Maybe$Just($author$project$Pages$Test$SpAttack),
+				$elm$core$Maybe$Just($author$project$Pages$Test$Speed));
+		case 'Relaxed':
+			return A4(
+				$author$project$Pages$Test$Nature,
+				'relaxed',
+				'のんき',
+				$elm$core$Maybe$Just($author$project$Pages$Test$Defence),
+				$elm$core$Maybe$Just($author$project$Pages$Test$Speed));
+		case 'Sassy':
+			return A4(
+				$author$project$Pages$Test$Nature,
+				'sassy',
+				'なまいき',
+				$elm$core$Maybe$Just($author$project$Pages$Test$SpDefence),
+				$elm$core$Maybe$Just($author$project$Pages$Test$Speed));
 		default:
-			return A4($author$project$Pages$Test$Nature, 'serious', 'まじめ', $elm$core$Maybe$Nothing, $elm$core$Maybe$Nothing);
+			return A4(
+				$author$project$Pages$Test$Nature,
+				'timid',
+				'おくびょう',
+				$elm$core$Maybe$Just($author$project$Pages$Test$Speed),
+				$elm$core$Maybe$Just($author$project$Pages$Test$Attack));
 	}
 };
 var $author$project$Pages$Test$Adamant = {$: 'Adamant'};
+var $author$project$Pages$Test$Bold = {$: 'Bold'};
 var $author$project$Pages$Test$Brave = {$: 'Brave'};
+var $author$project$Pages$Test$Calm = {$: 'Calm'};
+var $author$project$Pages$Test$Careful = {$: 'Careful'};
+var $author$project$Pages$Test$Gentle = {$: 'Gentle'};
+var $author$project$Pages$Test$Hasty = {$: 'Hasty'};
+var $author$project$Pages$Test$Impish = {$: 'Impish'};
+var $author$project$Pages$Test$Lax = {$: 'Lax'};
+var $author$project$Pages$Test$Lonely = {$: 'Lonely'};
+var $author$project$Pages$Test$Mild = {$: 'Mild'};
+var $author$project$Pages$Test$Modest = {$: 'Modest'};
+var $author$project$Pages$Test$Naive = {$: 'Naive'};
+var $author$project$Pages$Test$Naughty = {$: 'Naughty'};
+var $author$project$Pages$Test$Quiet = {$: 'Quiet'};
+var $author$project$Pages$Test$Relaxed = {$: 'Relaxed'};
+var $author$project$Pages$Test$Sassy = {$: 'Sassy'};
 var $author$project$Pages$Test$Serious = {$: 'Serious'};
+var $author$project$Pages$Test$Timid = {$: 'Timid'};
 var $author$project$Pages$Test$codeToCategory = function (code) {
-	return (code === 'adamant') ? $author$project$Pages$Test$Adamant : ((code === 'brave') ? $author$project$Pages$Test$Brave : $author$project$Pages$Test$Serious);
+	return (code === 'adamant') ? $author$project$Pages$Test$Adamant : ((code === 'brave') ? $author$project$Pages$Test$Brave : ((code === 'bold') ? $author$project$Pages$Test$Bold : ((code === 'calm') ? $author$project$Pages$Test$Calm : ((code === 'careful') ? $author$project$Pages$Test$Careful : ((code === 'gentle') ? $author$project$Pages$Test$Gentle : ((code === 'hasty') ? $author$project$Pages$Test$Hasty : ((code === 'impish') ? $author$project$Pages$Test$Impish : ((code === 'lax') ? $author$project$Pages$Test$Lax : ((code === 'lonely') ? $author$project$Pages$Test$Lonely : ((code === 'mild') ? $author$project$Pages$Test$Mild : ((code === 'modest') ? $author$project$Pages$Test$Modest : ((code === 'naive') ? $author$project$Pages$Test$Naive : ((code === 'naughty') ? $author$project$Pages$Test$Naughty : ((code === 'quiet') ? $author$project$Pages$Test$Quiet : ((code === 'relaxed') ? $author$project$Pages$Test$Relaxed : ((code === 'sassy') ? $author$project$Pages$Test$Sassy : ((code === 'timid') ? $author$project$Pages$Test$Timid : $author$project$Pages$Test$Serious)))))))))))))))));
 };
 var $author$project$Pages$Test$codeToNature = A2($elm$core$Basics$composeR, $author$project$Pages$Test$codeToCategory, $author$project$Pages$Test$categoryToNature);
 var $author$project$Pages$Test$updateParam = F3(
@@ -11480,7 +11608,7 @@ var $author$project$Pages$Test$Level = function (a) {
 	return {$: 'Level', a: a};
 };
 var $author$project$Pages$Test$listNatureCode = _List_fromArray(
-	['adamant', 'brave', 'serious']);
+	['serious', 'adamant', 'brave', 'bold', 'calm', 'careful', 'gentle', 'hasty', 'impish', 'lax', 'lonely', 'mild', 'modest', 'naive', 'naughty', 'quiet', 'relaxed', 'sassy', 'timid']);
 var $elm$html$Html$option = _VirtualDom_node('option');
 var $author$project$Pages$Test$selectNature = function (nature) {
 	return A2(
