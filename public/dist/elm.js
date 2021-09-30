@@ -11182,6 +11182,10 @@ var $ryannhg$elm_spa$ElmSpa$Page$element = F2(
 				}));
 	});
 var $author$project$Page$element = $ryannhg$elm_spa$ElmSpa$Page$element($author$project$Effect$fromCmd);
+var $author$project$Pages$Test$Nature = F4(
+	function (code, label, up, down) {
+		return {code: code, down: down, label: label, up: up};
+	});
 var $author$project$Pages$Test$Status = F4(
 	function (baseStats, effortValue, individualValue, realNumber) {
 		return {baseStats: baseStats, effortValue: effortValue, individualValue: individualValue, realNumber: realNumber};
@@ -11207,6 +11211,7 @@ var $author$project$Pages$Test$init = _Utils_Tuple2(
 		attack: $author$project$Pages$Test$initStatus,
 		content: '',
 		level: 50,
+		nature: A4($author$project$Pages$Test$Nature, 'serious', 'まじめ', $elm$core$Maybe$Nothing, $elm$core$Maybe$Nothing),
 		parameters: {attack: $author$project$Pages$Test$initStatus, defence: $author$project$Pages$Test$initStatus, hitPoint: $author$project$Pages$Test$initStatus, spAttack: $author$project$Pages$Test$initStatus, spDefence: $author$project$Pages$Test$initStatus, speed: $author$project$Pages$Test$initStatus}
 	},
 	$elm$core$Platform$Cmd$none);
@@ -11257,13 +11262,44 @@ var $author$project$Pages$Test$accessFieldValue = function (sc) {
 			};
 	}
 };
-var $author$project$Pages$Test$calculateStatus = F3(
-	function (level, paramCategory, status) {
+var $author$project$Pages$Test$Attack = {$: 'Attack'};
+var $author$project$Pages$Test$Defence = {$: 'Defence'};
+var $author$project$Pages$Test$HitPoint = {$: 'HitPoint'};
+var $author$project$Pages$Test$SpAttack = {$: 'SpAttack'};
+var $author$project$Pages$Test$SpDefence = {$: 'SpDefence'};
+var $author$project$Pages$Test$Speed = {$: 'Speed'};
+var $author$project$Pages$Test$calculateStatus = F4(
+	function (level, nature, paramCategory, status) {
+		var corrector = F2(
+			function (pcMaybe, rate) {
+				if (pcMaybe.$ === 'Just') {
+					var pc = pcMaybe.a;
+					return _Utils_eq(pc, paramCategory) ? A2(
+						$elm$core$Basics$composeR,
+						$elm$core$Basics$toFloat,
+						A2(
+							$elm$core$Basics$composeR,
+							function (x) {
+								return x * rate;
+							},
+							$elm$core$Basics$floor)) : function (x) {
+						return x;
+					};
+				} else {
+					return function (x) {
+						return x;
+					};
+				}
+			});
 		var newValue = function () {
 			if (paramCategory.$ === 'HitPoint') {
 				return (((((((status.baseStats.value * 2) + status.individualValue.value) + ((status.effortValue.value / 4) | 0)) * level) / 100) | 0) + level) + 10;
 			} else {
-				return ((((((status.baseStats.value * 2) + status.individualValue.value) + ((status.effortValue.value / 4) | 0)) * level) / 100) | 0) + 5;
+				return A3(
+					corrector,
+					nature.down,
+					0.9,
+					A3(corrector, nature.up, 1.1, ((((((status.baseStats.value * 2) + status.individualValue.value) + ((status.effortValue.value / 4) | 0)) * level) / 100) | 0) + 5));
 			}
 		}();
 		return _Utils_update(
@@ -11272,6 +11308,173 @@ var $author$project$Pages$Test$calculateStatus = F3(
 				realNumber: $elm$core$Maybe$Just(newValue)
 			});
 	});
+var $author$project$Pages$Test$calculateParameters = F3(
+	function (nature, level, params) {
+		var curriedCalculateStatus = A2($author$project$Pages$Test$calculateStatus, level, nature);
+		return {
+			attack: A2(curriedCalculateStatus, $author$project$Pages$Test$Attack, params.attack),
+			defence: A2(curriedCalculateStatus, $author$project$Pages$Test$Defence, params.defence),
+			hitPoint: A2(curriedCalculateStatus, $author$project$Pages$Test$HitPoint, params.hitPoint),
+			spAttack: A2(curriedCalculateStatus, $author$project$Pages$Test$SpAttack, params.spAttack),
+			spDefence: A2(curriedCalculateStatus, $author$project$Pages$Test$SpDefence, params.spDefence),
+			speed: A2(curriedCalculateStatus, $author$project$Pages$Test$Speed, params.speed)
+		};
+	});
+var $author$project$Pages$Test$categoryToNature = function (natureCategory) {
+	switch (natureCategory.$) {
+		case 'Serious':
+			return A4($author$project$Pages$Test$Nature, 'serious', 'まじめ', $elm$core$Maybe$Nothing, $elm$core$Maybe$Nothing);
+		case 'Adamant':
+			return A4(
+				$author$project$Pages$Test$Nature,
+				'adamant',
+				'いじっぱり',
+				$elm$core$Maybe$Just($author$project$Pages$Test$Attack),
+				$elm$core$Maybe$Just($author$project$Pages$Test$SpAttack));
+		case 'Brave':
+			return A4(
+				$author$project$Pages$Test$Nature,
+				'brave',
+				'ゆうかん',
+				$elm$core$Maybe$Just($author$project$Pages$Test$Attack),
+				$elm$core$Maybe$Just($author$project$Pages$Test$Speed));
+		case 'Bold':
+			return A4(
+				$author$project$Pages$Test$Nature,
+				'bold',
+				'ずぶとい',
+				$elm$core$Maybe$Just($author$project$Pages$Test$Defence),
+				$elm$core$Maybe$Just($author$project$Pages$Test$Attack));
+		case 'Calm':
+			return A4(
+				$author$project$Pages$Test$Nature,
+				'calm',
+				'おだやか',
+				$elm$core$Maybe$Just($author$project$Pages$Test$SpDefence),
+				$elm$core$Maybe$Just($author$project$Pages$Test$Attack));
+		case 'Careful':
+			return A4(
+				$author$project$Pages$Test$Nature,
+				'careful',
+				'しんちょう',
+				$elm$core$Maybe$Just($author$project$Pages$Test$SpDefence),
+				$elm$core$Maybe$Just($author$project$Pages$Test$SpAttack));
+		case 'Gentle':
+			return A4(
+				$author$project$Pages$Test$Nature,
+				'gentle',
+				'おとなしい',
+				$elm$core$Maybe$Just($author$project$Pages$Test$SpDefence),
+				$elm$core$Maybe$Just($author$project$Pages$Test$Defence));
+		case 'Hasty':
+			return A4(
+				$author$project$Pages$Test$Nature,
+				'hasty',
+				'せっかち',
+				$elm$core$Maybe$Just($author$project$Pages$Test$Speed),
+				$elm$core$Maybe$Just($author$project$Pages$Test$Defence));
+		case 'Impish':
+			return A4(
+				$author$project$Pages$Test$Nature,
+				'impish',
+				'わんぱく',
+				$elm$core$Maybe$Just($author$project$Pages$Test$Defence),
+				$elm$core$Maybe$Just($author$project$Pages$Test$SpAttack));
+		case 'Lax':
+			return A4(
+				$author$project$Pages$Test$Nature,
+				'lax',
+				'のうてんき',
+				$elm$core$Maybe$Just($author$project$Pages$Test$Defence),
+				$elm$core$Maybe$Just($author$project$Pages$Test$SpDefence));
+		case 'Lonely':
+			return A4(
+				$author$project$Pages$Test$Nature,
+				'lonely',
+				'さみしがり',
+				$elm$core$Maybe$Just($author$project$Pages$Test$Attack),
+				$elm$core$Maybe$Just($author$project$Pages$Test$Defence));
+		case 'Mild':
+			return A4(
+				$author$project$Pages$Test$Nature,
+				'mild',
+				'おっとり',
+				$elm$core$Maybe$Just($author$project$Pages$Test$SpAttack),
+				$elm$core$Maybe$Just($author$project$Pages$Test$Defence));
+		case 'Modest':
+			return A4(
+				$author$project$Pages$Test$Nature,
+				'modest',
+				'ひかえめ',
+				$elm$core$Maybe$Just($author$project$Pages$Test$SpAttack),
+				$elm$core$Maybe$Just($author$project$Pages$Test$Attack));
+		case 'Naive':
+			return A4(
+				$author$project$Pages$Test$Nature,
+				'naive',
+				'むじゃき',
+				$elm$core$Maybe$Just($author$project$Pages$Test$Speed),
+				$elm$core$Maybe$Just($author$project$Pages$Test$SpDefence));
+		case 'Naughty':
+			return A4(
+				$author$project$Pages$Test$Nature,
+				'naughty',
+				'やんちゃ',
+				$elm$core$Maybe$Just($author$project$Pages$Test$Attack),
+				$elm$core$Maybe$Just($author$project$Pages$Test$SpDefence));
+		case 'Quiet':
+			return A4(
+				$author$project$Pages$Test$Nature,
+				'quiet',
+				'れいせい',
+				$elm$core$Maybe$Just($author$project$Pages$Test$SpAttack),
+				$elm$core$Maybe$Just($author$project$Pages$Test$Speed));
+		case 'Relaxed':
+			return A4(
+				$author$project$Pages$Test$Nature,
+				'relaxed',
+				'のんき',
+				$elm$core$Maybe$Just($author$project$Pages$Test$Defence),
+				$elm$core$Maybe$Just($author$project$Pages$Test$Speed));
+		case 'Sassy':
+			return A4(
+				$author$project$Pages$Test$Nature,
+				'sassy',
+				'なまいき',
+				$elm$core$Maybe$Just($author$project$Pages$Test$SpDefence),
+				$elm$core$Maybe$Just($author$project$Pages$Test$Speed));
+		default:
+			return A4(
+				$author$project$Pages$Test$Nature,
+				'timid',
+				'おくびょう',
+				$elm$core$Maybe$Just($author$project$Pages$Test$Speed),
+				$elm$core$Maybe$Just($author$project$Pages$Test$Attack));
+	}
+};
+var $author$project$Pages$Test$Adamant = {$: 'Adamant'};
+var $author$project$Pages$Test$Bold = {$: 'Bold'};
+var $author$project$Pages$Test$Brave = {$: 'Brave'};
+var $author$project$Pages$Test$Calm = {$: 'Calm'};
+var $author$project$Pages$Test$Careful = {$: 'Careful'};
+var $author$project$Pages$Test$Gentle = {$: 'Gentle'};
+var $author$project$Pages$Test$Hasty = {$: 'Hasty'};
+var $author$project$Pages$Test$Impish = {$: 'Impish'};
+var $author$project$Pages$Test$Lax = {$: 'Lax'};
+var $author$project$Pages$Test$Lonely = {$: 'Lonely'};
+var $author$project$Pages$Test$Mild = {$: 'Mild'};
+var $author$project$Pages$Test$Modest = {$: 'Modest'};
+var $author$project$Pages$Test$Naive = {$: 'Naive'};
+var $author$project$Pages$Test$Naughty = {$: 'Naughty'};
+var $author$project$Pages$Test$Quiet = {$: 'Quiet'};
+var $author$project$Pages$Test$Relaxed = {$: 'Relaxed'};
+var $author$project$Pages$Test$Sassy = {$: 'Sassy'};
+var $author$project$Pages$Test$Serious = {$: 'Serious'};
+var $author$project$Pages$Test$Timid = {$: 'Timid'};
+var $author$project$Pages$Test$codeToCategory = function (code) {
+	return (code === 'adamant') ? $author$project$Pages$Test$Adamant : ((code === 'brave') ? $author$project$Pages$Test$Brave : ((code === 'bold') ? $author$project$Pages$Test$Bold : ((code === 'calm') ? $author$project$Pages$Test$Calm : ((code === 'careful') ? $author$project$Pages$Test$Careful : ((code === 'gentle') ? $author$project$Pages$Test$Gentle : ((code === 'hasty') ? $author$project$Pages$Test$Hasty : ((code === 'impish') ? $author$project$Pages$Test$Impish : ((code === 'lax') ? $author$project$Pages$Test$Lax : ((code === 'lonely') ? $author$project$Pages$Test$Lonely : ((code === 'mild') ? $author$project$Pages$Test$Mild : ((code === 'modest') ? $author$project$Pages$Test$Modest : ((code === 'naive') ? $author$project$Pages$Test$Naive : ((code === 'naughty') ? $author$project$Pages$Test$Naughty : ((code === 'quiet') ? $author$project$Pages$Test$Quiet : ((code === 'relaxed') ? $author$project$Pages$Test$Relaxed : ((code === 'sassy') ? $author$project$Pages$Test$Sassy : ((code === 'timid') ? $author$project$Pages$Test$Timid : $author$project$Pages$Test$Serious)))))))))))))))));
+};
+var $author$project$Pages$Test$codeToNature = A2($elm$core$Basics$composeR, $author$project$Pages$Test$codeToCategory, $author$project$Pages$Test$categoryToNature);
 var $author$project$Pages$Test$updateParam = F3(
 	function (pc, params, status) {
 		switch (pc.$) {
@@ -11342,57 +11545,95 @@ var $author$project$Pages$Test$validateLevel = function (input) {
 var $author$project$Pages$Test$update = F2(
 	function (msg, model) {
 		var newModel = function () {
-			if (msg.$ === 'Level') {
-				var levelInput = msg.a;
-				var _v1 = $author$project$Pages$Test$validateLevel(levelInput);
-				if (_v1.$ === 'Nothing') {
-					return model;
-				} else {
-					var newLevel = _v1.a;
+			switch (msg.$) {
+				case 'Level':
+					var levelInput = msg.a;
+					var _v1 = $author$project$Pages$Test$validateLevel(levelInput);
+					if (_v1.$ === 'Nothing') {
+						return model;
+					} else {
+						var newLevel = _v1.a;
+						return _Utils_update(
+							model,
+							{
+								level: newLevel,
+								parameters: A3($author$project$Pages$Test$calculateParameters, model.nature, newLevel, model.parameters)
+							});
+					}
+				case 'ChangeValue':
+					var pc = msg.a;
+					var sc = msg.b;
+					var input = msg.c;
 					return _Utils_update(
 						model,
-						{level: newLevel});
-				}
-			} else {
-				var pc = msg.a;
-				var sc = msg.b;
-				var input = msg.c;
-				return _Utils_update(
-					model,
-					{
-						parameters: function () {
-							var statusToUpdate = A2($author$project$Pages$Test$accessFieldStatus, pc, model.parameters);
-							return A3(
-								$author$project$Pages$Test$updateParam,
-								pc,
-								model.parameters,
-								A3(
-									$author$project$Pages$Test$calculateStatus,
-									model.level,
+						{
+							parameters: function () {
+								var statusToUpdate = A2($author$project$Pages$Test$accessFieldStatus, pc, model.parameters);
+								return A3(
+									$author$project$Pages$Test$updateParam,
 									pc,
-									A3(
-										$author$project$Pages$Test$updateStatus,
-										sc,
-										statusToUpdate,
-										A2(
-											$author$project$Pages$Test$updateValue,
-											input,
-											A2($author$project$Pages$Test$accessFieldValue, sc, statusToUpdate)))));
-						}()
-					});
+									model.parameters,
+									A4(
+										$author$project$Pages$Test$calculateStatus,
+										model.level,
+										model.nature,
+										pc,
+										A3(
+											$author$project$Pages$Test$updateStatus,
+											sc,
+											statusToUpdate,
+											A2(
+												$author$project$Pages$Test$updateValue,
+												input,
+												A2($author$project$Pages$Test$accessFieldValue, sc, statusToUpdate)))));
+							}()
+						});
+				default:
+					var input = msg.a;
+					var newNature = $author$project$Pages$Test$codeToNature(input);
+					return _Utils_update(
+						model,
+						{
+							nature: newNature,
+							parameters: A3($author$project$Pages$Test$calculateParameters, newNature, model.level, model.parameters)
+						});
 			}
 		}();
 		return _Utils_Tuple2(newModel, $elm$core$Platform$Cmd$none);
 	});
-var $author$project$Pages$Test$Attack = {$: 'Attack'};
-var $author$project$Pages$Test$Defence = {$: 'Defence'};
-var $author$project$Pages$Test$HitPoint = {$: 'HitPoint'};
+var $author$project$Pages$Test$ChangeNature = function (a) {
+	return {$: 'ChangeNature', a: a};
+};
 var $author$project$Pages$Test$Level = function (a) {
 	return {$: 'Level', a: a};
 };
-var $author$project$Pages$Test$SpAttack = {$: 'SpAttack'};
-var $author$project$Pages$Test$SpDefence = {$: 'SpDefence'};
-var $author$project$Pages$Test$Speed = {$: 'Speed'};
+var $author$project$Pages$Test$listNatureCode = _List_fromArray(
+	['serious', 'adamant', 'brave', 'bold', 'calm', 'careful', 'gentle', 'hasty', 'impish', 'lax', 'lonely', 'mild', 'modest', 'naive', 'naughty', 'quiet', 'relaxed', 'sassy', 'timid']);
+var $elm$html$Html$option = _VirtualDom_node('option');
+var $author$project$Pages$Test$selectNature = function (nature) {
+	return A2(
+		$elm$html$Html$option,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$value(nature.code)
+			]),
+		_List_fromArray(
+			[
+				$elm$html$Html$text(nature.label)
+			]));
+};
+var $author$project$Pages$Test$listNatureSelect = A2(
+	$elm$core$List$map,
+	A2($elm$core$Basics$composeR, $author$project$Pages$Test$codeToNature, $author$project$Pages$Test$selectNature),
+	$author$project$Pages$Test$listNatureCode);
+var $elm$html$Html$nav = _VirtualDom_node('nav');
+var $author$project$Pages$Test$onChange = function (handler) {
+	return A2(
+		$elm$html$Html$Events$on,
+		'change',
+		A2($elm$json$Json$Decode$map, handler, $elm$html$Html$Events$targetValue));
+};
+var $elm$html$Html$select = _VirtualDom_node('select');
 var $author$project$Pages$Test$isValid = function (string) {
 	var _v0 = $elm$core$String$toInt(string);
 	if (_v0.$ === 'Just') {
@@ -11410,7 +11651,8 @@ var $author$project$Pages$Test$viewInput = F4(
 				[
 					$elm$html$Html$Attributes$type_(t),
 					$elm$html$Html$Attributes$placeholder(p),
-					$elm$html$Html$Events$onInput(toMsg)
+					$elm$html$Html$Events$onInput(toMsg),
+					$elm$html$Html$Attributes$class('column input is-medium is-one-quarter')
 				]),
 			_List_Nil) : A2(
 			$elm$html$Html$input,
@@ -11419,7 +11661,8 @@ var $author$project$Pages$Test$viewInput = F4(
 					A2($elm$html$Html$Attributes$style, 'border-color', 'red'),
 					$elm$html$Html$Attributes$type_(t),
 					$elm$html$Html$Attributes$placeholder(p),
-					$elm$html$Html$Events$onInput(toMsg)
+					$elm$html$Html$Events$onInput(toMsg),
+					$elm$html$Html$Attributes$class('column input is-medium is-danger')
 				]),
 			_List_Nil);
 	});
@@ -11430,6 +11673,22 @@ var $author$project$Pages$Test$ChangeValue = F3(
 	});
 var $author$project$Pages$Test$EffortValue = {$: 'EffortValue'};
 var $author$project$Pages$Test$IndividualValue = {$: 'IndividualValue'};
+var $author$project$Pages$Test$describeParam = function (pc) {
+	switch (pc.$) {
+		case 'HitPoint':
+			return 'HP';
+		case 'Attack':
+			return 'こうげき';
+		case 'Defence':
+			return 'ぼうぎょ';
+		case 'SpAttack':
+			return 'とくこう';
+		case 'SpDefence':
+			return 'とくぼう';
+		default:
+			return 'すばやさ';
+	}
+};
 var $author$project$Pages$Test$resultView = function (maybeInt) {
 	if (maybeInt.$ === 'Nothing') {
 		return '';
@@ -11437,6 +11696,9 @@ var $author$project$Pages$Test$resultView = function (maybeInt) {
 		var val = maybeInt.a;
 		return $elm$core$String$fromInt(val);
 	}
+};
+var $elm$html$Html$Attributes$step = function (n) {
+	return A2($elm$html$Html$Attributes$stringProperty, 'step', n);
 };
 var $author$project$Pages$Test$validateEffortValue = function (ev) {
 	return ((ev <= 252) && (ev >= 0)) ? $elm$core$Maybe$Just(ev) : $elm$core$Maybe$Nothing;
@@ -11461,99 +11723,184 @@ var $author$project$Pages$Test$validateStatusInput = F2(
 			}
 		}
 	});
-var $author$project$Pages$Test$viewStatusInput = F5(
-	function (t, p, sc, v, toMsg) {
+var $author$project$Pages$Test$viewStatusClass = F2(
+	function (sc, v) {
 		var _v0 = A2($author$project$Pages$Test$validateStatusInput, sc, v);
 		if (_v0.$ === 'Just') {
-			return A2(
-				$elm$html$Html$input,
-				_List_fromArray(
-					[
-						$elm$html$Html$Attributes$type_(t),
-						$elm$html$Html$Attributes$placeholder(p),
-						$elm$html$Html$Events$onInput(toMsg)
-					]),
-				_List_Nil);
+			return $elm$html$Html$Attributes$class('column input is-medium');
 		} else {
-			return A2(
-				$elm$html$Html$input,
-				_List_fromArray(
-					[
-						A2($elm$html$Html$Attributes$style, 'border-color', 'red'),
-						$elm$html$Html$Attributes$type_(t),
-						$elm$html$Html$Attributes$placeholder(p),
-						$elm$html$Html$Events$onInput(toMsg)
-					]),
-				_List_Nil);
+			return $elm$html$Html$Attributes$class('column input is-medium is-danger');
 		}
 	});
 var $author$project$Pages$Test$viewRowInput = F2(
 	function (pc, model) {
 		var status = A2($author$project$Pages$Test$accessFieldStatus, pc, model.parameters);
-		return _List_fromArray(
-			[
-				A5(
-				$author$project$Pages$Test$viewStatusInput,
-				'text',
-				'種族値',
-				$author$project$Pages$Test$BaseStats,
-				status.baseStats.input,
-				A2($author$project$Pages$Test$ChangeValue, pc, $author$project$Pages$Test$BaseStats)),
-				A5(
-				$author$project$Pages$Test$viewStatusInput,
-				'text',
-				'個体値',
-				$author$project$Pages$Test$IndividualValue,
-				status.individualValue.input,
-				A2($author$project$Pages$Test$ChangeValue, pc, $author$project$Pages$Test$IndividualValue)),
-				A5(
-				$author$project$Pages$Test$viewStatusInput,
-				'text',
-				'努力値',
-				$author$project$Pages$Test$EffortValue,
-				status.effortValue.input,
-				A2($author$project$Pages$Test$ChangeValue, pc, $author$project$Pages$Test$EffortValue)),
-				$elm$html$Html$text(
-				$author$project$Pages$Test$resultView(
-					A2($author$project$Pages$Test$accessFieldStatus, pc, model.parameters).realNumber)),
-				$elm$html$Html$text(model.content)
-			]);
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('field'),
+					A2($elm$html$Html$Attributes$style, 'margin-top', '20px')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('label')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text(
+							$author$project$Pages$Test$describeParam(pc))
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('columns control')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$input,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$type_('number'),
+									$elm$html$Html$Attributes$placeholder('種族値'),
+									A2($author$project$Pages$Test$viewStatusClass, $author$project$Pages$Test$BaseStats, status.baseStats.input),
+									$elm$html$Html$Events$onInput(
+									A2($author$project$Pages$Test$ChangeValue, pc, $author$project$Pages$Test$BaseStats))
+								]),
+							_List_Nil),
+							A2(
+							$elm$html$Html$input,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$type_('number'),
+									$elm$html$Html$Attributes$placeholder('個体値'),
+									A2($author$project$Pages$Test$viewStatusClass, $author$project$Pages$Test$IndividualValue, status.individualValue.input),
+									$elm$html$Html$Events$onInput(
+									A2($author$project$Pages$Test$ChangeValue, pc, $author$project$Pages$Test$IndividualValue))
+								]),
+							_List_Nil),
+							A2(
+							$elm$html$Html$input,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$type_('number'),
+									$elm$html$Html$Attributes$placeholder('努力値'),
+									A2($author$project$Pages$Test$viewStatusClass, $author$project$Pages$Test$EffortValue, status.effortValue.input),
+									$elm$html$Html$Events$onInput(
+									A2($author$project$Pages$Test$ChangeValue, pc, $author$project$Pages$Test$EffortValue)),
+									$elm$html$Html$Attributes$step('4')
+								]),
+							_List_Nil),
+							A2(
+							$elm$html$Html$div,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$class('column')
+								]),
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$button,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$class('button')
+										]),
+									_List_fromArray(
+										[
+											$elm$html$Html$text('↑')
+										])),
+									A2(
+									$elm$html$Html$button,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$class('button')
+										]),
+									_List_fromArray(
+										[
+											$elm$html$Html$text('↓')
+										]))
+								])),
+							A2(
+							$elm$html$Html$div,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$class('column'),
+									A2($elm$html$Html$Attributes$style, 'font-size', '20px')
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text(
+									$author$project$Pages$Test$resultView(
+										A2($author$project$Pages$Test$accessFieldStatus, pc, model.parameters).realNumber))
+								]))
+						]))
+				]));
 	});
 var $author$project$Pages$Test$view = function (model) {
 	return {
 		body: _List_fromArray(
 			[
 				A2(
-				$elm$html$Html$div,
-				_List_Nil,
+				$elm$html$Html$nav,
 				_List_fromArray(
 					[
-						A4($author$project$Pages$Test$viewInput, 'text', 'level', model.content, $author$project$Pages$Test$Level)
+						$elm$html$Html$Attributes$class('navbar is-primary')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('navbar-brand'),
+								A2($elm$html$Html$Attributes$style, 'font-size', '35px'),
+								A2($elm$html$Html$Attributes$style, 'margin-left', '30px')
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Pokelm')
+							]))
 					])),
 				A2(
 				$elm$html$Html$div,
-				_List_Nil,
-				A2($author$project$Pages$Test$viewRowInput, $author$project$Pages$Test$HitPoint, model)),
-				A2(
-				$elm$html$Html$div,
-				_List_Nil,
-				A2($author$project$Pages$Test$viewRowInput, $author$project$Pages$Test$Attack, model)),
-				A2(
-				$elm$html$Html$div,
-				_List_Nil,
-				A2($author$project$Pages$Test$viewRowInput, $author$project$Pages$Test$Defence, model)),
-				A2(
-				$elm$html$Html$div,
-				_List_Nil,
-				A2($author$project$Pages$Test$viewRowInput, $author$project$Pages$Test$SpAttack, model)),
-				A2(
-				$elm$html$Html$div,
-				_List_Nil,
-				A2($author$project$Pages$Test$viewRowInput, $author$project$Pages$Test$SpDefence, model)),
-				A2(
-				$elm$html$Html$div,
-				_List_Nil,
-				A2($author$project$Pages$Test$viewRowInput, $author$project$Pages$Test$Speed, model))
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('container'),
+						A2($elm$html$Html$Attributes$style, 'margin-top', '20px')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('columns')
+							]),
+						_List_fromArray(
+							[
+								A4($author$project$Pages$Test$viewInput, 'number', 'level', model.content, $author$project$Pages$Test$Level),
+								A2(
+								$elm$html$Html$select,
+								_List_fromArray(
+									[
+										$elm$html$Html$Attributes$class('column'),
+										$author$project$Pages$Test$onChange($author$project$Pages$Test$ChangeNature)
+									]),
+								$author$project$Pages$Test$listNatureSelect)
+							])),
+						A2($author$project$Pages$Test$viewRowInput, $author$project$Pages$Test$HitPoint, model),
+						A2($author$project$Pages$Test$viewRowInput, $author$project$Pages$Test$Attack, model),
+						A2($author$project$Pages$Test$viewRowInput, $author$project$Pages$Test$Defence, model),
+						A2($author$project$Pages$Test$viewRowInput, $author$project$Pages$Test$SpAttack, model),
+						A2($author$project$Pages$Test$viewRowInput, $author$project$Pages$Test$SpDefence, model),
+						A2($author$project$Pages$Test$viewRowInput, $author$project$Pages$Test$Speed, model)
+					]))
 			]),
 		title: 'pokelm'
 	};
@@ -11902,4 +12249,4 @@ var $author$project$Main$view = function (model) {
 };
 var $author$project$Main$main = $elm$browser$Browser$application(
 	{init: $author$project$Main$init, onUrlChange: $author$project$Main$ChangedUrl, onUrlRequest: $author$project$Main$ClickedLink, subscriptions: $author$project$Main$subscriptions, update: $author$project$Main$update, view: $author$project$Main$view});
-_Platform_export({'Main':{'init':$author$project$Main$main($elm$json$Json$Decode$value)({"versions":{"elm":"0.19.1"},"types":{"message":"Main.Msg","aliases":{"Gen.Pages.Msg":{"args":[],"type":"Gen.Msg.Msg"},"Url.Url":{"args":[],"type":"{ protocol : Url.Protocol, host : String.String, port_ : Maybe.Maybe Basics.Int, path : String.String, query : Maybe.Maybe String.String, fragment : Maybe.Maybe String.String }"}},"unions":{"Main.Msg":{"args":[],"tags":{"ChangedUrl":["Url.Url"],"ClickedLink":["Browser.UrlRequest"],"Shared":["Shared.Msg"],"Page":["Gen.Pages.Msg"]}},"Basics.Int":{"args":[],"tags":{"Int":[]}},"Maybe.Maybe":{"args":["a"],"tags":{"Just":["a"],"Nothing":[]}},"Gen.Msg.Msg":{"args":[],"tags":{"Test":["Pages.Test.Msg"]}},"Shared.Msg":{"args":[],"tags":{"NoOp":[]}},"Url.Protocol":{"args":[],"tags":{"Http":[],"Https":[]}},"String.String":{"args":[],"tags":{"String":[]}},"Browser.UrlRequest":{"args":[],"tags":{"Internal":["Url.Url"],"External":["String.String"]}},"Pages.Test.Msg":{"args":[],"tags":{"Level":["String.String"],"ChangeValue":["Pages.Test.ParamCategory","Pages.Test.StatusCategory","String.String"]}},"Pages.Test.ParamCategory":{"args":[],"tags":{"HitPoint":[],"Attack":[],"Defence":[],"SpAttack":[],"SpDefence":[],"Speed":[]}},"Pages.Test.StatusCategory":{"args":[],"tags":{"BaseStats":[],"EffortValue":[],"IndividualValue":[]}}}}})}});}(this));
+_Platform_export({'Main':{'init':$author$project$Main$main($elm$json$Json$Decode$value)({"versions":{"elm":"0.19.1"},"types":{"message":"Main.Msg","aliases":{"Gen.Pages.Msg":{"args":[],"type":"Gen.Msg.Msg"},"Url.Url":{"args":[],"type":"{ protocol : Url.Protocol, host : String.String, port_ : Maybe.Maybe Basics.Int, path : String.String, query : Maybe.Maybe String.String, fragment : Maybe.Maybe String.String }"},"Pages.Test.NatureCode":{"args":[],"type":"String.String"}},"unions":{"Main.Msg":{"args":[],"tags":{"ChangedUrl":["Url.Url"],"ClickedLink":["Browser.UrlRequest"],"Shared":["Shared.Msg"],"Page":["Gen.Pages.Msg"]}},"Basics.Int":{"args":[],"tags":{"Int":[]}},"Maybe.Maybe":{"args":["a"],"tags":{"Just":["a"],"Nothing":[]}},"Gen.Msg.Msg":{"args":[],"tags":{"Test":["Pages.Test.Msg"]}},"Shared.Msg":{"args":[],"tags":{"NoOp":[]}},"Url.Protocol":{"args":[],"tags":{"Http":[],"Https":[]}},"String.String":{"args":[],"tags":{"String":[]}},"Browser.UrlRequest":{"args":[],"tags":{"Internal":["Url.Url"],"External":["String.String"]}},"Pages.Test.Msg":{"args":[],"tags":{"Level":["String.String"],"ChangeValue":["Pages.Test.ParamCategory","Pages.Test.StatusCategory","String.String"],"ChangeNature":["Pages.Test.NatureCode"]}},"Pages.Test.ParamCategory":{"args":[],"tags":{"HitPoint":[],"Attack":[],"Defence":[],"SpAttack":[],"SpDefence":[],"Speed":[]}},"Pages.Test.StatusCategory":{"args":[],"tags":{"BaseStats":[],"EffortValue":[],"IndividualValue":[]}}}}})}});}(this));
