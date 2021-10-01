@@ -35,7 +35,7 @@ onChange handler =
 
 
 type alias Level =
-    Int
+    Value
 
 
 type alias Model =
@@ -55,7 +55,7 @@ initStatus =
 init : ( Model, Cmd Msg )
 init =
     ( { content = ""
-      , level = 50
+      , level = { value = 50, input = "50" }
       , nature = Nature "serious" "まじめ" Nothing Nothing
       , attack = initStatus
       , parameters =
@@ -76,7 +76,7 @@ init =
 
 
 type Msg
-    = Level String
+    = ChangeLevel String
     | ChangeValue ParamCategory StatusCategory String
     | ChangeNature NatureCode
 
@@ -100,11 +100,11 @@ calculateStatus level nature paramCategory status =
         newValue =
             case paramCategory of
                 HitPoint ->
-                    (status.baseStats.value * 2 + status.individualValue.value + status.effortValue.value // 4) * level // 100 + level + 10
+                    (status.baseStats.value * 2 + status.individualValue.value + status.effortValue.value // 4) * level.value // 100 + level.value + 10
 
                 _ ->
                     (status.baseStats.value * 2 + status.individualValue.value + status.effortValue.value // 4)
-                        * level
+                        * level.value
                         // 100
                         + 5
                         |> corrector nature.up 1.1
@@ -134,16 +134,20 @@ update msg model =
     let
         newModel =
             case msg of
-                Level levelInput ->
-                    case validateLevel levelInput of
-                        Nothing ->
-                            model
+                ChangeLevel levelInput ->
+                    let
+                        newLevel =
+                            case validateLevel levelInput of
+                                Nothing ->
+                                    { value = model.level.value, input = levelInput }
 
-                        Just newLevel ->
-                            { model
-                                | level = newLevel
-                                , parameters = calculateParameters model.nature newLevel model.parameters
-                            }
+                                Just newVal ->
+                                    { value = newVal, input = levelInput }
+                    in
+                    { model
+                        | level = newLevel
+                        , parameters = calculateParameters model.nature newLevel model.parameters
+                    }
 
                 ChangeValue pc sc input ->
                     { model
@@ -201,8 +205,8 @@ view model =
             ]
         , div [ class "container", style "margin-top" "20px" ]
             [ div [ class "columns" ]
-                [ viewInput "number" "level" model.content Level
-                , select [ class "column", onChange ChangeNature ] Nature.listNatureSelect
+                [ viewValueInput "level" [ class "column is-medium is-one-quarter" ] model.level.input ChangeLevel
+                , select [ class "column is-one-quarter", onChange ChangeNature ] Nature.listNatureSelect
                 ]
             , viewRowInput HitPoint model
             , viewRowInput Attack model
@@ -233,13 +237,19 @@ viewRowInput pc model =
         ]
 
 
-viewInput : String -> String -> String -> (String -> msg) -> Html msg
-viewInput t p v toMsg =
-    if isValid v then
-        input [ type_ t, placeholder p, onInput toMsg, class "column input is-medium is-one-quarter" ] []
+viewValueInput : String -> List (Attribute msg) -> String -> (String -> msg) -> Html msg
+viewValueInput p attributes inputValue toMsg =
+    let
+        myAttributes =
+            List.append [ type_ "tel", placeholder p, value inputValue, onInput toMsg, class "input" ] <|
+                List.append attributes <|
+                    if isValid inputValue then
+                        []
 
-    else
-        input [ style "border-color" "red", type_ t, placeholder p, onInput toMsg, class "column input is-medium is-danger" ] []
+                    else
+                        [ class "is-danger" ]
+    in
+    input myAttributes []
 
 
 viewStatusClass : StatusCategory -> String -> Attribute msg
@@ -276,7 +286,7 @@ isValid string =
                 False
 
 
-validateLevel : String -> Maybe Level
+validateLevel : String -> Maybe Int
 validateLevel input =
     case String.toInt input of
         Nothing ->
