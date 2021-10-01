@@ -8,6 +8,7 @@ import Json.Decode as Json
 import Page
 import Request
 import Shared
+import Types.Value as Value exposing (Value)
 import View exposing (View)
 
 
@@ -32,10 +33,6 @@ onChange handler =
 
 type alias Level =
     Int
-
-
-type alias Value =
-    { value : Int, input : String }
 
 
 type alias Status =
@@ -346,16 +343,6 @@ calculateParameters nature level params =
     }
 
 
-updateValue : String -> Value -> Value
-updateValue input value =
-    case String.toInt input of
-        Just num ->
-            Value num input
-
-        Nothing ->
-            { value | input = input }
-
-
 updateStatus : StatusCategory -> Status -> Value -> Status
 updateStatus category status value =
     case category of
@@ -452,7 +439,7 @@ update msg model =
                             in
                             statusToUpdate
                                 |> accessFieldValue sc
-                                |> updateValue input
+                                |> Value.updateValue input
                                 |> updateStatus sc statusToUpdate
                                 |> calculateStatus model.level model.nature pc
                                 |> updateParam pc model.parameters
