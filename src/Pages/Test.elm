@@ -34,6 +34,10 @@ onChange handler =
     on "change" (Json.map handler Events.targetValue)
 
 
+type alias InputValidator =
+    String -> Maybe Int
+
+
 type alias Level =
     Value
 
@@ -205,7 +209,7 @@ view model =
             ]
         , div [ class "container", style "margin-top" "20px" ]
             [ div [ class "columns" ]
-                [ viewValueInput "level" [ class "column is-medium is-one-quarter" ] model.level.input ChangeLevel
+                [ viewValueInput "level" validateLevel [ class "column is-medium is-one-quarter" ] model.level.input ChangeLevel
                 , select [ class "column is-one-quarter", onChange ChangeNature ] Nature.listNatureSelect
                 ]
             , viewRowInput HitPoint model
@@ -228,38 +232,29 @@ viewRowInput pc model =
     div [ class "field", style "margin-top" "20px" ]
         [ div [ class "label" ] [ text <| Parameter.describe pc ]
         , div [ class "columns control" ]
-            [ input [ type_ "number", placeholder "種族値", viewStatusClass BaseStats status.baseStats.input, onInput (ChangeValue pc BaseStats) ] []
-            , input [ type_ "number", placeholder "個体値", viewStatusClass IndividualValue status.individualValue.input, onInput (ChangeValue pc IndividualValue) ] []
-            , input [ type_ "number", placeholder "努力値", viewStatusClass EffortValue status.effortValue.input, onInput (ChangeValue pc EffortValue), step "4" ] []
+            [ viewValueInput "種族値" (Status.validateStatusInput BaseStats) [ class "column is-medium" ] status.baseStats.input <| ChangeValue pc BaseStats
+            , viewValueInput "個体値" (Status.validateStatusInput IndividualValue) [ class "column is-medium" ] status.individualValue.input <| ChangeValue pc IndividualValue
+            , viewValueInput "努力値" (Status.validateStatusInput EffortValue) [ class "column is-medium" ] status.effortValue.input <| ChangeValue pc EffortValue
             , div [ class "column" ] [ button [ class "button" ] [ text "↑" ], button [ class "button" ] [ text "↓" ] ]
             , div [ class "column", style "font-size" "20px" ] [ text <| resultView <| .realNumber <| Parameter.accessFieldStatus pc <| model.parameters ]
             ]
         ]
 
 
-viewValueInput : String -> List (Attribute msg) -> String -> (String -> msg) -> Html msg
-viewValueInput p attributes inputValue toMsg =
+viewValueInput : String -> InputValidator -> List (Attribute msg) -> String -> (String -> msg) -> Html msg
+viewValueInput p validator attributes inputValue toMsg =
     let
         myAttributes =
             List.append [ type_ "tel", placeholder p, value inputValue, onInput toMsg, class "input" ] <|
                 List.append attributes <|
-                    if isValid inputValue then
-                        []
+                    case validator inputValue of
+                        Just _ ->
+                            []
 
-                    else
-                        [ class "is-danger" ]
+                        Nothing ->
+                            [ class "is-danger" ]
     in
     input myAttributes []
-
-
-viewStatusClass : StatusCategory -> String -> Attribute msg
-viewStatusClass sc v =
-    case Status.validateStatusInput sc v of
-        Just _ ->
-            class "column input is-medium"
-
-        Nothing ->
-            class "column input is-medium is-danger"
 
 
 resultView : Maybe Int -> String
@@ -272,21 +267,7 @@ resultView maybeInt =
             String.fromInt val
 
 
-isValid : String -> Bool
-isValid string =
-    case String.toInt string of
-        Just _ ->
-            True
-
-        Nothing ->
-            if string == "" then
-                True
-
-            else
-                False
-
-
-validateLevel : String -> Maybe Int
+validateLevel : InputValidator
 validateLevel input =
     case String.toInt input of
         Nothing ->
