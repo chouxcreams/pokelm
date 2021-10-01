@@ -1,4 +1,4 @@
-module Pages.Test exposing (Model, Msg, ParamCategory(..), Status, page)
+module Pages.Test exposing (Model, Msg, page)
 
 import Gen.Params.Test exposing (Params)
 import Html exposing (Attribute, Html, button, div, h2, input, nav, option, select, span, text)
@@ -8,6 +8,7 @@ import Json.Decode as Json
 import Page
 import Request
 import Shared
+import Types.Status as Status exposing (Status, StatusCategory(..))
 import Types.Value as Value exposing (Value)
 import View exposing (View)
 
@@ -33,10 +34,6 @@ onChange handler =
 
 type alias Level =
     Int
-
-
-type alias Status =
-    { baseStats : Value, effortValue : Value, individualValue : Value, realNumber : Maybe Int }
 
 
 type alias Parameters =
@@ -274,12 +271,6 @@ init =
 -- UPDATE
 
 
-type StatusCategory
-    = BaseStats
-    | EffortValue
-    | IndividualValue
-
-
 type ParamCategory
     = HitPoint
     | Attack
@@ -341,32 +332,6 @@ calculateParameters nature level params =
     , spDefence = curriedCalculateStatus SpDefence params.spDefence
     , speed = curriedCalculateStatus Speed params.speed
     }
-
-
-updateStatus : StatusCategory -> Status -> Value -> Status
-updateStatus category status value =
-    case category of
-        BaseStats ->
-            { status | baseStats = value }
-
-        EffortValue ->
-            { status | effortValue = value }
-
-        IndividualValue ->
-            { status | individualValue = value }
-
-
-accessFieldValue : StatusCategory -> (Status -> Value)
-accessFieldValue sc =
-    case sc of
-        BaseStats ->
-            .baseStats
-
-        EffortValue ->
-            .effortValue
-
-        IndividualValue ->
-            .individualValue
 
 
 accessFieldStatus : ParamCategory -> (Parameters -> Status)
@@ -438,9 +403,9 @@ update msg model =
                                         |> accessFieldStatus pc
                             in
                             statusToUpdate
-                                |> accessFieldValue sc
+                                |> Status.accessFieldValue sc
                                 |> Value.updateValue input
-                                |> updateStatus sc statusToUpdate
+                                |> Status.updateStatus sc statusToUpdate
                                 |> calculateStatus model.level model.nature pc
                                 |> updateParam pc model.parameters
                     }
@@ -528,7 +493,7 @@ viewInput t p v toMsg =
 
 viewStatusClass : StatusCategory -> String -> Attribute msg
 viewStatusClass sc v =
-    case validateStatusInput sc v of
+    case Status.validateStatusInput sc v of
         Just _ ->
             class "column input is-medium"
 
@@ -572,42 +537,6 @@ validateLevel input =
 
             else
                 Nothing
-
-
-validateStatusInput : StatusCategory -> String -> Maybe Int
-validateStatusInput statusCategory input =
-    case String.toInt input of
-        Nothing ->
-            Nothing
-
-        Just val ->
-            case statusCategory of
-                EffortValue ->
-                    validateEffortValue val
-
-                BaseStats ->
-                    Just val
-
-                IndividualValue ->
-                    validateIndividualValue val
-
-
-validateEffortValue : Int -> Maybe Int
-validateEffortValue ev =
-    if ev <= 252 && ev >= 0 then
-        Just ev
-
-    else
-        Nothing
-
-
-validateIndividualValue : Int -> Maybe Int
-validateIndividualValue iv =
-    if iv <= 31 && iv >= 0 then
-        Just iv
-
-    else
-        Nothing
 
 
 describeParam : ParamCategory -> String
