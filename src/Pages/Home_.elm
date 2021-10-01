@@ -1,6 +1,6 @@
 module Pages.Home_ exposing (Model, Msg, page)
 
-import Gen.Params.Test exposing (Params)
+import Gen.Params.Home_ exposing (Params)
 import Html exposing (Attribute, Html, button, div, input, nav, select, text)
 import Html.Attributes exposing (class, placeholder, style, type_, value)
 import Html.Events as Events exposing (on, onInput)

@@ -5,6 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "elm-spa server",
+    "clean": "rimraf .elm-spa/generated",
+    "generate": "elm-spa gen",
     "build": "elm-spa build"
   },
   "author": "chouxcreams",
