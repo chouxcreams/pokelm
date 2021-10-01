@@ -1,8 +1,8 @@
 module Pages.Test exposing (Model, Msg, page)
 
 import Gen.Params.Test exposing (Params)
-import Html exposing (Attribute, Html, button, div, h2, input, nav, option, select, span, text)
-import Html.Attributes exposing (class, placeholder, step, style, type_, value)
+import Html exposing (Attribute, Html, button, div, input, nav, select, text)
+import Html.Attributes exposing (class, placeholder, style, type_, value)
 import Html.Events as Events exposing (on, onInput)
 import Json.Decode as Json
 import Page
@@ -16,7 +16,7 @@ import View exposing (View)
 
 
 page : Shared.Model -> Request.With Params -> Page.With Model Msg
-page shared req =
+page _ _ =
     Page.element
         { init = init
         , update = update
@@ -187,7 +187,7 @@ update msg model =
 
 
 subscriptions : Model -> Sub Msg
-subscriptions model =
+subscriptions _ =
     Sub.none
 
 
