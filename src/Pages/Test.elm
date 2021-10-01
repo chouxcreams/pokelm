@@ -8,6 +8,7 @@ import Json.Decode as Json
 import Page
 import Request
 import Shared
+import Types.Parameter as Parameter exposing (ParamCategory(..), Parameters)
 import Types.Status as Status exposing (Status, StatusCategory(..))
 import Types.Value as Value exposing (Value)
 import View exposing (View)
@@ -34,10 +35,6 @@ onChange handler =
 
 type alias Level =
     Int
-
-
-type alias Parameters =
-    { hitPoint : Status, attack : Status, defence : Status, spAttack : Status, spDefence : Status, speed : Status }
 
 
 type alias Model =
@@ -271,15 +268,6 @@ init =
 -- UPDATE
 
 
-type ParamCategory
-    = HitPoint
-    | Attack
-    | Defence
-    | SpAttack
-    | SpDefence
-    | Speed
-
-
 type Msg
     = Level String
     | ChangeValue ParamCategory StatusCategory String
@@ -334,50 +322,6 @@ calculateParameters nature level params =
     }
 
 
-accessFieldStatus : ParamCategory -> (Parameters -> Status)
-accessFieldStatus pc =
-    case pc of
-        HitPoint ->
-            .hitPoint
-
-        Attack ->
-            .attack
-
-        Defence ->
-            .defence
-
-        SpAttack ->
-            .spAttack
-
-        SpDefence ->
-            .spDefence
-
-        Speed ->
-            .speed
-
-
-updateParam : ParamCategory -> Parameters -> Status -> Parameters
-updateParam pc params status =
-    case pc of
-        HitPoint ->
-            { params | hitPoint = status }
-
-        Attack ->
-            { params | attack = status }
-
-        Defence ->
-            { params | defence = status }
-
-        SpAttack ->
-            { params | spAttack = status }
-
-        SpDefence ->
-            { params | spDefence = status }
-
-        Speed ->
-            { params | speed = status }
-
-
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     let
@@ -400,14 +344,14 @@ update msg model =
                             let
                                 statusToUpdate =
                                     model.parameters
-                                        |> accessFieldStatus pc
+                                        |> Parameter.accessFieldStatus pc
                             in
                             statusToUpdate
                                 |> Status.accessFieldValue sc
                                 |> Value.updateValue input
                                 |> Status.updateStatus sc statusToUpdate
                                 |> calculateStatus model.level model.nature pc
-                                |> updateParam pc model.parameters
+                                |> Parameter.updateParam pc model.parameters
                     }
 
                 ChangeNature input ->
@@ -468,16 +412,16 @@ viewRowInput : ParamCategory -> Model -> Html Msg
 viewRowInput pc model =
     let
         status =
-            model.parameters |> accessFieldStatus pc
+            model.parameters |> Parameter.accessFieldStatus pc
     in
     div [ class "field", style "margin-top" "20px" ]
-        [ div [ class "label" ] [ text <| describeParam pc ]
+        [ div [ class "label" ] [ text <| Parameter.describe pc ]
         , div [ class "columns control" ]
             [ input [ type_ "number", placeholder "種族値", viewStatusClass BaseStats status.baseStats.input, onInput (ChangeValue pc BaseStats) ] []
             , input [ type_ "number", placeholder "個体値", viewStatusClass IndividualValue status.individualValue.input, onInput (ChangeValue pc IndividualValue) ] []
             , input [ type_ "number", placeholder "努力値", viewStatusClass EffortValue status.effortValue.input, onInput (ChangeValue pc EffortValue), step "4" ] []
             , div [ class "column" ] [ button [ class "button" ] [ text "↑" ], button [ class "button" ] [ text "↓" ] ]
-            , div [ class "column", style "font-size" "20px" ] [ text <| resultView <| .realNumber <| accessFieldStatus pc <| model.parameters ]
+            , div [ class "column", style "font-size" "20px" ] [ text <| resultView <| .realNumber <| Parameter.accessFieldStatus pc <| model.parameters ]
             ]
         ]
 
@@ -537,25 +481,3 @@ validateLevel input =
 
             else
                 Nothing
-
-
-describeParam : ParamCategory -> String
-describeParam pc =
-    case pc of
-        HitPoint ->
-            "HP"
-
-        Attack ->
-            "こうげき"
-
-        Defence ->
-            "ぼうぎょ"
-
-        SpAttack ->
-            "とくこう"
-
-        SpDefence ->
-            "とくぼう"
-
-        Speed ->
-            "すばやさ"
