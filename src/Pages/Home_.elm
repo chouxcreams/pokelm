@@ -1,4 +1,4 @@
-module Pages.Home_ exposing (Model, Msg, page)
+module Pages.Home_ exposing (Model, Msg, calculateParameters, page)
 
 import Gen.Params.Home_ exposing (Params)
 import Html exposing (Attribute, Html, button, div, input, nav, select, text)
