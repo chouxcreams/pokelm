@@ -4,13 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "elm-spa server",
-    "clean": "rimraf .elm-spa/generated",
-    "generate": "elm-spa gen",
-    "format": "npx elm-format",
     "build": "elm-spa build",
-    "prepare": "husky install",
-    "lint-staged": "lint-staged"
+    "clean": "rimraf .elm-spa/generated",
+    "dev": "elm-spa server",
+    "format": "npx elm-format --yes",
+    "generate": "elm-spa gen",
+    "lint-staged": "lint-staged",
+    "prepare": "husky install"
   },
   "lint-staged": {
     "*.{elm}": "npm run format"
