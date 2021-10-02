@@ -10,7 +10,8 @@
     "format": "npx elm-format --yes",
     "generate": "elm-spa gen",
     "lint-staged": "lint-staged",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "test": "npx elm-test"
   },
   "lint-staged": {
     "*.elm": "npm run format"
@@ -19,6 +20,7 @@
   "license": "MIT",
   "devDependencies": {
     "elm-format": "^0.8.5",
+    "elm-test": "^0.19.1-revision7",
     "husky": "^7.0.0",
     "lint-staged": "^11.1.2"
   },
