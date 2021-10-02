@@ -15,5 +15,8 @@
         - name: npm install
           run: npm install --dev
 
+        - name: genelate elm-spa files
+          run: npm run generate
+
         - name: Run test
           run: npm test
