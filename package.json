@@ -10,7 +10,8 @@
     "format": "npx elm-format --yes",
     "generate": "elm-spa gen",
     "lint-staged": "lint-staged",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "test": "npx elm-test"
   },
   "lint-staged": {
     "*.elm": "npm run format"
