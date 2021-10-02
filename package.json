@@ -13,7 +13,7 @@
     "prepare": "husky install"
   },
   "lint-staged": {
-    "*.{elm}": "npm run format"
+    "*.elm": "npm run format"
   },
   "author": "chouxcreams",
   "license": "MIT",
