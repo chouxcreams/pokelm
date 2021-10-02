@@ -1,4 +1,4 @@
-# Pokelm\
+# Pokelm
 [![ElmTest](https://github.com/chouxcreams/pokelm/actions/workflows/test.yml/badge.svg)](https://github.com/chouxcreams/pokelm/actions/workflows/test.yml)
 ![Vercel](https://vercelbadge.vercel.app/api/chouxcreams/pokelm)
 
