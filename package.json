@@ -4,15 +4,23 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "elm-spa server",
+    "build": "elm-spa build",
     "clean": "rimraf .elm-spa/generated",
+    "dev": "elm-spa server",
+    "format": "npx elm-format --yes",
     "generate": "elm-spa gen",
-    "build": "elm-spa build"
+    "lint-staged": "lint-staged",
+    "prepare": "husky install"
+  },
+  "lint-staged": {
+    "*.elm": "npm run format"
   },
   "author": "chouxcreams",
   "license": "MIT",
   "devDependencies": {
-    "elm-format": "^0.8.5"
+    "elm-format": "^0.8.5",
+    "husky": "^7.0.0",
+    "lint-staged": "^11.1.2"
   },
   "dependencies": {
     "elm": "^0.19.1-5",
