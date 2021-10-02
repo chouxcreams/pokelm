@@ -26,6 +26,7 @@ type NatureCategory
     | Gentle
     | Hasty
     | Impish
+    | Jolly
     | Lax
     | Lonely
     | Mild
@@ -50,6 +51,7 @@ listNatureCode =
     , "gentle"
     , "hasty"
     , "impish"
+    , "jolly"
     , "lax"
     , "lonely"
     , "mild"
@@ -92,6 +94,9 @@ categoryToNature natureCategory =
 
         Impish ->
             Nature "impish" "わんぱく" (Just Defence) (Just SpAttack)
+
+        Jolly ->
+            Nature "jolly" "ようき" (Just Speed) (Just SpAttack)
 
         Lax ->
             Nature "lax" "のうてんき" (Just Defence) (Just SpDefence)
@@ -149,6 +154,9 @@ codeToCategory code =
 
     else if code == "impish" then
         Impish
+
+    else if code == "jolly" then
+        Jolly
 
     else if code == "lax" then
         Lax
