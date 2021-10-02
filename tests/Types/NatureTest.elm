@@ -2,7 +2,7 @@ module Types.NatureTest exposing (..)
 
 import Expect
 import Test exposing (..)
-import Types.Nature as Nature exposing (Nature)
+import Types.Nature exposing (Nature)
 import Types.Parameter exposing (ParamCategory(..))
 
 
@@ -21,14 +21,9 @@ natureTest =
 
 
 type alias NatureCorrect =
-    Maybe ParamCategory
+    ( Maybe ParamCategory, Maybe ParamCategory )
 
 
-validateCorrect : Nature -> ( NatureCorrect, NatureCorrect )
+validateCorrect : Nature -> NatureCorrect
 validateCorrect nature =
     Tuple.pair nature.up nature.down
-
-
-paramList : List ParamCategory
-paramList =
-    [ Attack, Defence, SpAttack, SpDefence, Speed ]
