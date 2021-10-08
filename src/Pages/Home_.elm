@@ -4,7 +4,8 @@ import Gen.Params.Home_ exposing (Params)
 import Html exposing (Attribute, Html, button, div, input, nav, select, text)
 import Html.Attributes exposing (class, placeholder, style, type_, value)
 import Html.Events as Events exposing (on, onInput)
-import Json.Decode as Json
+import Http
+import Json.Decode as Json exposing (Decoder, field, int, list, map2, string)
 import Page
 import Request
 import Shared
@@ -43,7 +44,7 @@ type alias Level =
 
 
 type alias Model =
-    { content : String, level : Level, nature : Nature, attack : Status, parameters : Parameters }
+    { name : String, id : String, level : Level, nature : Nature, attack : Status, parameters : Parameters }
 
 
 initValue : Int -> Value
@@ -58,7 +59,8 @@ initStatus =
 
 init : ( Model, Cmd Msg )
 init =
-    ( { content = ""
+    ( { name = ""
+      , id = "1"
       , level = { value = 50, input = "50" }
       , nature = Nature "serious" "まじめ" Nothing Nothing
       , attack = initStatus
@@ -83,6 +85,8 @@ type Msg
     = ChangeLevel String
     | ChangeValue ParamCategory StatusCategory String
     | ChangeNature NatureCode
+    | ChangeId String
+    | GotPokemon (Result Http.Error Pokemon)
 
 
 calculateStatus : Level -> Nature -> ParamCategory -> Status -> Status
@@ -135,51 +139,74 @@ calculateParameters nature level params =
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    let
-        newModel =
-            case msg of
-                ChangeLevel levelInput ->
+    case msg of
+        ChangeLevel levelInput ->
+            let
+                newLevel =
+                    case validateLevel levelInput of
+                        Nothing ->
+                            { value = model.level.value, input = levelInput }
+
+                        Just newVal ->
+                            { value = newVal, input = levelInput }
+            in
+            ( { model
+                | level = newLevel
+                , parameters = calculateParameters model.nature newLevel model.parameters
+              }
+            , Cmd.none
+            )
+
+        ChangeValue pc sc input ->
+            ( { model
+                | parameters =
                     let
-                        newLevel =
-                            case validateLevel levelInput of
-                                Nothing ->
-                                    { value = model.level.value, input = levelInput }
-
-                                Just newVal ->
-                                    { value = newVal, input = levelInput }
+                        statusToUpdate =
+                            model.parameters
+                                |> Parameter.accessFieldStatus pc
                     in
-                    { model
-                        | level = newLevel
-                        , parameters = calculateParameters model.nature newLevel model.parameters
-                    }
+                    statusToUpdate
+                        |> Status.accessFieldValue sc
+                        |> Value.updateValue input
+                        |> Status.updateStatus sc statusToUpdate
+                        |> calculateStatus model.level model.nature pc
+                        |> Parameter.updateParam pc model.parameters
+              }
+            , Cmd.none
+            )
 
-                ChangeValue pc sc input ->
-                    { model
-                        | parameters =
-                            let
-                                statusToUpdate =
-                                    model.parameters
-                                        |> Parameter.accessFieldStatus pc
-                            in
-                            statusToUpdate
-                                |> Status.accessFieldValue sc
-                                |> Value.updateValue input
-                                |> Status.updateStatus sc statusToUpdate
-                                |> calculateStatus model.level model.nature pc
-                                |> Parameter.updateParam pc model.parameters
-                    }
+        ChangeNature input ->
+            let
+                newNature =
+                    Nature.fromCode input
+            in
+            ( { model
+                | nature = newNature
+                , parameters = calculateParameters newNature model.level model.parameters
+              }
+            , Cmd.none
+            )
 
-                ChangeNature input ->
-                    let
-                        newNature =
-                            Nature.fromCode input
-                    in
-                    { model
-                        | nature = newNature
-                        , parameters = calculateParameters newNature model.level model.parameters
-                    }
-    in
-    ( newModel, Cmd.none )
+        ChangeId idInput ->
+            case String.toInt idInput of
+                Just id ->
+                    ( { model | id = idInput }, getPokemon id )
+
+                Nothing ->
+                    ( { model | id = idInput }, Cmd.none )
+
+        GotPokemon result ->
+            case result of
+                Ok res ->
+                    ( { model
+                        | name = res.name
+                        , parameters = updateParametersFromApi res.stats model.parameters
+                      }
+                    , Cmd.none
+                    )
+
+                _ ->
+                    ( model, Cmd.none )
 
 
 
@@ -211,6 +238,8 @@ view model =
             [ div [ class "columns" ]
                 [ viewValueInput "level" validateLevel [ class "column is-medium is-one-quarter" ] model.level.input ChangeLevel
                 , select [ class "column is-one-quarter", onChange ChangeNature ] Nature.listNatureSelect
+                , viewValueInput "pokemon" (\x -> String.toInt x) [ class "column is-medium is-one-quarter" ] model.id ChangeId
+                , text model.name
                 ]
             , viewRowInput HitPoint model
             , viewRowInput Attack model
@@ -279,3 +308,64 @@ validateLevel input =
 
             else
                 Nothing
+
+
+
+-- HTTP
+
+
+getPokemon : Int -> Cmd Msg
+getPokemon id =
+    Http.get
+        { url = "https://pokeapi.co/api/v2/pokemon/" ++ String.fromInt id
+        , expect = Http.expectJson GotPokemon pokemonDecoder
+        }
+
+
+type alias Pokemon =
+    { name : String, stats : List ApiStat }
+
+
+type alias ApiStat =
+    { baseStat : Int, name : String }
+
+
+apiStatDecoder : Decoder ApiStat
+apiStatDecoder =
+    map2 ApiStat
+        (field "base_stat" int)
+        (field "stat" (field "name" string))
+
+
+pokemonDecoder : Decoder Pokemon
+pokemonDecoder =
+    map2 Pokemon
+        (field "name" string)
+        (field "stats" <| list apiStatDecoder)
+
+
+updateValueFromApi : ApiStat -> Value
+updateValueFromApi stat =
+    Value stat.baseStat <| String.fromInt stat.baseStat
+
+
+updateStatusFromApi : ApiStat -> Status -> Status
+updateStatusFromApi stat status =
+    { status | baseStats = updateValueFromApi stat }
+
+
+updateParameterFromApi : ApiStat -> Parameters -> Parameters
+updateParameterFromApi stat params =
+    let
+        pc =
+            Parameter.fromCode stat.name
+
+        newStatus =
+            updateStatusFromApi stat <| Parameter.accessFieldStatus pc params
+    in
+    Parameter.updateParam pc params newStatus
+
+
+updateParametersFromApi : List ApiStat -> Parameters -> Parameters
+updateParametersFromApi stats params =
+    List.foldl updateParameterFromApi params stats
