@@ -80,3 +80,28 @@ describe pc =
 
         Speed ->
             "すばやさ"
+
+
+fromCode : String -> ParamCategory
+fromCode code =
+    case code of
+        "hp" ->
+            HitPoint
+
+        "attack" ->
+            Attack
+
+        "defense" ->
+            Defence
+
+        "special-attack" ->
+            SpAttack
+
+        "special-defense" ->
+            SpDefence
+
+        "speed" ->
+            Speed
+
+        _ ->
+            HitPoint
