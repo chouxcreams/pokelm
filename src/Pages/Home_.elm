@@ -86,7 +86,7 @@ type Msg
     | ChangeValue ParamCategory StatusCategory String
     | ChangeNature NatureCode
     | ChangeId String
-    | FetchPokemon (Result Http.Error Pokemon)
+    | GotPokemon (Result Http.Error Pokemon)
 
 
 calculateStatus : Level -> Nature -> ParamCategory -> Status -> Status
@@ -195,7 +195,7 @@ update msg model =
                 Nothing ->
                     ( { model | id = idInput }, Cmd.none )
 
-        FetchPokemon result ->
+        GotPokemon result ->
             case result of
                 Ok res ->
                     ( { model
@@ -318,7 +318,7 @@ getPokemon : Int -> Cmd Msg
 getPokemon id =
     Http.get
         { url = "https://pokeapi.co/api/v2/pokemon/" ++ String.fromInt id
-        , expect = Http.expectJson FetchPokemon pokemonDecoder
+        , expect = Http.expectJson GotPokemon pokemonDecoder
         }
 
 
